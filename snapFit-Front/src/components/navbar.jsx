@@ -1,25 +1,15 @@
 import { NavLink } from "react-router-dom";
+import Logo from "./logo";
 
-const NavBar = () => {
-    const btnLink = 'block inline-block py-1 text-white hover:text-morado-clarito cursor-pointer mr-4'
+const NavBar2 = () => {
+    const btnLink = 'block inline-block py-1 text-black hover:text-morado-clarito cursor-pointer mr-4'
     const activateLink = 'block inline-block py-1 text-morado-clarito mr-4'
     return (
-    <header className="text-gray-600 body-font">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            className="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full"
-            viewBox="0 0 24 24"
-          >
+        <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0" href="http://localhost:5173/">
+              <img src="src/img/ejercicio.png" className="mr-3 h-6 sm:h-9" alt="Logo" />
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg>
-          <span className="ml-3 text-xl font-semibold text-white">SnapFit</span>
+          <span className="ml-3 text-3xl font-semibold text-black">SnapFit</span>
         </a>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
         <NavLink to="/" className={({isActive}) => isActive?activateLink:btnLink}>Inicio</NavLink>
@@ -27,24 +17,28 @@ const NavBar = () => {
           <NavLink to="/learnnutrition" className={({isActive}) => isActive?activateLink:btnLink}>Aprende a comer</NavLink>
           <NavLink to="/exercise" className={({isActive}) => isActive?activateLink:btnLink}>Ejercicio</NavLink>
           <NavLink to="/tips" className={({isActive}) => isActive?activateLink:btnLink}>Tips</NavLink>
+          <NavLink to="/suplements" className={({isActive}) => isActive?activateLink:btnLink}>Suplementación</NavLink>
         </nav>
-        <button className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
-          Iniciar sesión
+        <button class="flex-none px-2 btn btn-black btn-sm">
           <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
+            stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
-            className="w-4 h-4 ml-1"
-            viewBox="0 0 24 24"
+            aria-hidden="true"
+            class="w-5 h-5"
           >
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
+          <span class="sr-only">Open Menu</span>
         </button>
       </div>
-    </header>
   );
 };
 
-export default NavBar;
+export default NavBar2;
