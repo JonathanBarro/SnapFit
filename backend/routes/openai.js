@@ -1,7 +1,8 @@
 const { OpenAI } = require('openai');
+const OPENAI_API_KEY = procces.env.OPENAI_API_KEY
 
 const openai = new OpenAI({
-  apiKey: "sk-proj-3nXliBZ2Ix2MDq4m7uqqT3BlbkFJP85q6Qb3GMLUaGZpiTol"
+  OPENAI_API_KEY
 });
 
 async function callOpenAI() {
