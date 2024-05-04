@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -245,5 +246,12 @@ const SignUp = () => {
   )
 }
 
+=======
+const SignUp = () => {
+    return (
+      <div>Sign Up</div>
+    );
+  };
+>>>>>>> 3cea4dc7541391e0c69c45239c85049e7fe0a12f
   
   export default SignUp;
