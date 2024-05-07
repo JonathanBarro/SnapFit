@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
@@ -41,22 +42,26 @@ const SignUp = () => {
     setEdad('');
     setPeso('');
     setAltura('');
-    setFrecActividadSem('');
-    setTDisponible('');
-    setRComida([]);
+    setFrec_actividad_sem('');
+    setT_disponible('');
+    setR_comida([]);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!email.includes('@')) {
-      alert('Por favor ingresa un correo electrónico válido.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Por favor ingresa un correo electrónico válido.'
+      });
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3030/users/', {
+      const response = await axios.post('http://localhost:3030/users/signup', {
         username,
         email,
         password,
@@ -70,15 +75,29 @@ const SignUp = () => {
       setIsLoading(false);
       if (response.status === 201) {
         console.log('Usuario registrado:', response.data);
-        alert('Registro completado con éxito.');
+        Swal.fire({
+          icon: 'success',
+          title: '¡Registrado!',
+          text: 'Registro completado con éxito.'
+        });
         handleCancel(); // Limpia el formulario después del envío exitoso
       } else {
-        throw new Error('Respuesta no esperada del servidor');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al registrar',
+          text: 'Error al registrar. Por favor, intenta de nuevo.',
+          footer: error.response ? JSON.stringify(error.response.data) : 'No hay información del error'
+        });
       }
     } catch (error) {
       setIsLoading(false);
       console.error('Error al registrar:', error.response ? error.response.data : error);
-      alert('Error al registrar. Por favor, intenta de nuevo.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al registrar',
+        text: 'Error al registrar. Por favor, intenta de nuevo.',
+        footer: error.response ? JSON.stringify(error.response.data) : 'No hay información del error'
+      });
     }
   };
 
@@ -86,14 +105,19 @@ const SignUp = () => {
 
   return (
     <div className='mx-auto max-w-lg px-4'>
+      <div className='pt-16 pb-3'>
+        <h1 className="text-4xl font-bold text-white text-center py-4 bg-purple-500 d5Bcfc rounded-lg">
+            ¡Bienvenido a SnapFitnes!
+        </h1>
+      </div>
     <form onSubmit={handleSubmit}>
       <div className="space-y-12">
        
 
         <div className="border-b border-gray-900/10 pb-12 pt-10"> 
-          <h2 className="text-base font-semibold leading-7 text-gray-900">Información personal</h2>
+          <h2 className="text-2xl font-semibold leading-7 text-gray-900">Información personal</h2>
 
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div className="border-t border-gray-900/10 pt-7 mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
                 Nombre
@@ -104,8 +128,26 @@ const SignUp = () => {
                   name="username"
                   value={username}
                   autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   onChange={handleChange}
+                  placeholder="Usuario  "
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                Contraseña
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="password"
+                  value={password}
+                  autoComplete="given-name"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
+                  onChange={handleChange}
+                  placeholder="*****"
                 />
               </div>
             </div>
@@ -121,8 +163,9 @@ const SignUp = () => {
                   value={email}
                   type="email"
                   autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   onChange={handleChange}
+                  placeholder="usuario@usuario.com"
                 />
               </div>
             </div>
@@ -138,8 +181,9 @@ const SignUp = () => {
                   name="edad"
                   value={edad}
                   autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   onChange={handleChange}
+                  placeholder="26"
                 />
               </div>
             </div>
@@ -154,8 +198,9 @@ const SignUp = () => {
                   name="altura"
                   value={altura}
                   autoComplete="family-name"
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   onChange={handleChange}
+                  placeholder="178 cm"
                 />
               </div>
             </div>
@@ -171,8 +216,9 @@ const SignUp = () => {
                   name="peso"
                   value={peso}
                   autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   onChange={handleChange}
+                  placeholder="80 kg"
                 />
               </div>
             </div>
@@ -187,8 +233,9 @@ const SignUp = () => {
                   name="frec_actividad_sem"
                   value={frec_actividad_sem}
                   autoComplete="family-name"
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   onChange={handleChange}
+                  placeholder="3 días a la semana"
                 />
               </div>
             </div>
@@ -203,8 +250,9 @@ const SignUp = () => {
                   name="t_disponible"
                   value={t_disponible}
                   autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   onChange={handleChange}
+                  placeholder="4 días a la semana"
                 />
               </div>
             </div>
@@ -219,7 +267,7 @@ const SignUp = () => {
                   name="r_comida"
                   value={r_comida}
                   autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   placeholder=" Vegano, celiaco, alergico a..."
                   onChange={handleChange}
                 />
@@ -236,7 +284,7 @@ const SignUp = () => {
           <button
             type="submit"
             disabled={isLoading} // Deshabilitar durante la carga
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            className="rounded-md bg-purple-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             {isLoading ? 'Guardando...' : 'Save'}
           </button>
         </div>

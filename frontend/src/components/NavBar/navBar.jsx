@@ -11,7 +11,7 @@ function NavBar() {
   const handleClick = () => setClick(!click);
   return (
     <>
-      <nav className="navbar">
+      <nav className="navbar bg-gradient-to-r from-violet-500 to-fuchsia-500">
         <div className="nav-container">
           <a className="nav-logo" href="http://localhost:5173/">
             <span className="icon">
