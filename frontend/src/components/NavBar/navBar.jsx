@@ -1,97 +1,132 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import "./navBar.scss";
-import { HamburgetMenuClose, HamburgetMenuOpen } from "./icons";
+import React, { useContext, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import UserContext from "../UserContext"; // Importa correctamente el contexto
+import {
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+  Button,
+} from "@material-tailwind/react";
 import Logo from "../logo";
-import { Button } from "@material-tailwind/react";
+import { HamburgetMenuClose, HamburgetMenuOpen } from "./icons";
+import "./navBar.scss";
 
 function NavBar() {
   const [click, setClick] = useState(false);
+  const { user, setUser } = useContext(UserContext);
+  console.log(user); // Esto te mostrará si `user` se actualiza cuando cambia el contexto
+  const navigate = useNavigate();
 
   const handleClick = () => setClick(!click);
-  return (
-    <>
-      <nav className="navbar bg-gradient-to-r from-violet-500 to-fuchsia-500">
-        <div className="nav-container">
-          <a className="nav-logo" href="http://localhost:5173/">
-            <span className="icon">
-              <Logo />
-            </span>
-            <span className="ml-3xl text-4xl font-semibold text-white">
-              SnapFit
-            </span>
-          </a>
+  const handleLogout = () => {
+    setUser(null); // Asumiendo que esta función elimina correctamente el usuario del estado
+    localStorage.removeItem("token"); // Asegúrate de limpiar el token o cualquier dato de sesión
+    navigate("/login"); // Redirige al usuario a la página de login
+  };
 
-          <ul className={click ? "nav-menu active" : "nav-menu"}>
-            <li className="nav-item">
-              <NavLink
-                exact
-                to="/"
-                activeClassName="active"
-                className="nav-links"
-                onClick={handleClick}
-              >
-                Home
-              </NavLink>
+  return (
+    <nav className="navbar bg-gradient-to-r from-violet-500 to-fuchsia-500">
+      <div className="nav-container">
+        <a className="nav-logo" href="/">
+          <span className="icon">
+            <Logo />
+          </span>
+          <span className="ml-3xl text-4xl font-semibold text-white">
+            SnapFit
+          </span>
+        </a>
+
+        <ul className={click ? "nav-menu active" : "nav-menu"}>
+          <li className="nav-item">
+            <NavLink
+              exact
+              to="/"
+              activeClassName="active"
+              className="nav-links"
+              onClick={handleClick}
+            >
+              Home
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              exact
+              to="/aboutus"
+              activeClassName="active"
+              className="nav-links"
+              onClick={handleClick}
+            >
+              About
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              exact
+              to="/learnnutrition"
+              activeClassName="active"
+              className="nav-links"
+              onClick={handleClick}
+            >
+              Nutrición
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              exact
+              to="/exercise"
+              activeClassName="active"
+              className="nav-links"
+              onClick={handleClick}
+            >
+              Ejercicio
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              exact
+              to="/tips"
+              activeClassName="active"
+              className="nav-links"
+              onClick={handleClick}
+            >
+              Tips
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              exact
+              to="/suplements"
+              activeClassName="active"
+              className="nav-links"
+              onClick={handleClick}
+            >
+              Suplementación
+            </NavLink>
+          </li>
+
+          {user ? (
+             <li className="bttn-item bttn-menu">
+              <Menu>
+                <MenuHandler>
+                  <Button 
+                    variant="gradient"
+                    className="bttn-color text-sm flex items-center gap-3 text-#712ce0"> Menu</Button>
+                </MenuHandler>
+                <MenuList className="menu-list">
+                  <MenuItem className="menu-item">Mi perfil</MenuItem>
+                  <MenuItem className="menu-item">Mi salud</MenuItem>
+                  <MenuItem className="menu-item">Nutrición</MenuItem>
+                  <MenuItem className="menu-item">Ejercicios</MenuItem>
+                  <hr className="menu-divider my-1" />
+                  <MenuItem className="menu-item" onClick={handleLogout}>Cerrar sesión</MenuItem>
+                </MenuList>
+              </Menu>
             </li>
-            <li className="nav-item">
-              <NavLink
-                exact
-                to="/aboutus"
-                activeClassName="active"
-                className="nav-links"
-                onClick={handleClick}
-              >
-                About
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                exact
-                to="/learnnutrition"
-                activeClassName="active"
-                className="nav-links"
-                onClick={handleClick}
-              >
-                Nutrición
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                exact
-                to="/exercise"
-                activeClassName="active"
-                className="nav-links"
-                onClick={handleClick}
-              >
-                Ejercicio
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                exact
-                to="/tips"
-                activeClassName="active"
-                className="nav-links"
-                onClick={handleClick}
-              >
-                Tips
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                exact
-                to="/suplements"
-                activeClassName="active"
-                className="nav-links"
-                onClick={handleClick}
-              >
-                Suplementación
-              </NavLink>
-            </li>
-            <li className="bttn-item">
-              <div className="bttn-menu">
-                <a href="/login">
+          ) : (
+            <>
+              <li className="bttn-item">
+                <NavLink to="/login" className="bttn-menu">
                   <Button
                     variant="gradient"
                     className="bttn-color text-sm flex items-center gap-3 text-#712ce0"
@@ -112,12 +147,10 @@ function NavBar() {
                     </svg>
                     Log in
                   </Button>
-                </a>
-              </div>
-            </li>
-            <li className="bttn-item">
-              <div className="bttn-menu">
-                <a href="/signup">
+                </NavLink>
+              </li>
+              <li className="bttn-item">
+                <NavLink to="/signup" className="bttn-menu">
                   <Button
                     variant="gradient"
                     className="bttn-color text-sm flex items-center gap-3 text-#712ce0"
@@ -138,26 +171,16 @@ function NavBar() {
                     </svg>
                     Sign up
                   </Button>
-                </a>
-              </div>
-            </li>
-          </ul>
-          <div className="nav-icon" onClick={handleClick}>
-            {/* <i className={click ? "fas fa-times" : "fas fa-bars"}></i> */}
-
-            {click ? (
-              <span className="icon">
-                <HamburgetMenuClose />{" "}
-              </span>
-            ) : (
-              <span className="icon">
-                <HamburgetMenuOpen />
-              </span>
-            )}
-          </div>
+                </NavLink>
+              </li>
+            </>
+          )}
+        </ul>
+        <div className="nav-icon" onClick={handleClick}>
+          {click ? <HamburgetMenuClose /> : <HamburgetMenuOpen />}
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 }
 

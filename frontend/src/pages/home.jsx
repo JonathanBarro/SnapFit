@@ -1,6 +1,16 @@
+import {
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+  Button,
+} from "@material-tailwind/react";
+
 const Home = () => {
   return (
-    <div>info</div>
+    <div>
+      AAAA
+    </div>
   );
 };
 

@@ -1,27 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import UserContext from '../components/UserContext'; // Asegúrate de que la ruta sea correcta
+import { useNavigate } from 'react-router-dom'; // Para redireccionar después del login
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // Estado para controlar la visibilidad de la contraseña
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const { setUser } = useContext(UserContext); // Usar UserContext
+  const navigate = useNavigate(); // Hook para la navegación
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post('http://localhost:3030/users/login', { email, password });
       console.log('Login successful:', response.data);
-      localStorage.setItem('token', response.data.token);
+      setUser(response.data.user); // Actualiza el estado global del usuario
+      localStorage.setItem('token', response.data.token); // Guarda el token en localStorage
       Swal.fire({
         icon: 'success',
         title: '¡Inicio de sesión exitoso!',
         text: 'Has iniciado sesión correctamente.',
         confirmButtonColor: '#3085d6',
         confirmButtonText: 'Ok'
+      }).then((result) => {
+        if (result.value) {
+          navigate('/'); // Redirecciona a la página de inicio después del login
+        }
       });
     } catch (error) {
       if (error.response) {
@@ -55,7 +64,7 @@ const LogIn = () => {
           <p className="leading-relaxed mt-4">Por favor, inicia sesión para continuar.</p>
         </div>
         <div className="lg:w-2/6 md:w-1/2 bg-gray-100 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
-          <h2 className="text-gray-900 text-lg font-medium title-font mb-5">Log In</h2>
+          <h2 className="text-gray-900 text-lg font-medium title-font mb-5">Inicio de Sesión</h2>
           <form onSubmit={handleLogin}>
             <div className="relative mb-4">
               <label htmlFor="email" className="leading-7 text-sm text-gray-600">Email</label>
@@ -87,7 +96,7 @@ const LogIn = () => {
                 <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
             </div>
-            <button type="submit" className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Log In</button>
+            <button type="submit" className="text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg">Log In</button>
             {errorMessage && <p className="text-red-500 text-xs italic mt-3">{errorMessage}</p>}
           </form>
         </div>

@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { UserProvider } from './components/UserContext';
 import Home from "./pages/home";
 import AboutUs from "./pages/oboutUs";
 import Tips from "./pages/tips";
@@ -16,24 +17,26 @@ import './components/Footer/footer.scss'; // Ajusta la ruta según donde coloque
 
 function App() {
   return (
-    <div className="app-container"> {/* Contenedor principal */}
-      <NavBar />
-      <div className="content-wrap"> {/* Este div envuelve todo el contenido que no es el footer */}
-        <Routes>
-          <Route path='/' element={<Home />}></Route>
-          <Route path='/aboutus' element={<AboutUs />}></Route>
-          <Route path='/tips' element={<Tips />}></Route>
-          <Route path='/exercise' element={<Exercise />}></Route>
-          <Route path='/login' element={<LogIn />}></Route>
-          <Route path='/signup' element={<SignUp />}></Route>
-          <Route path='/learnnutrition' element={<LearNutrititon />}></Route>
-          <Route path='/notfound' element={<NotFoud/>}></Route>
-          <Route path='/suplements' element={<Suplements/>}></Route>
-          <Route path='*' element={<Navigate to="/notfound"/>}></Route>
-        </Routes>
+    <UserProvider>
+      <div className="app-container">
+        <NavBar />
+        <div className="content-wrap"> 
+          <Routes>
+            <Route path='/' element={<Home />}></Route>
+            <Route path='/aboutus' element={<AboutUs />}></Route>
+            <Route path='/tips' element={<Tips />}></Route>
+            <Route path='/exercise' element={<Exercise />}></Route>
+            <Route path='/login' element={<LogIn />}></Route>
+            <Route path='/signup' element={<SignUp />}></Route>
+            <Route path='/learnnutrition' element={<LearNutrititon />}></Route>
+            <Route path='/notfound' element={<NotFoud/>}></Route>
+            <Route path='/suplements' element={<Suplements/>}></Route>
+            <Route path='*' element={<Navigate to="/notfound"/>}></Route>
+          </Routes>
+        </div>
+        <Footer/>
       </div>
-      <Footer />
-    </div>
+    </UserProvider>
   );
 }
 

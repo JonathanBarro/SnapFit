@@ -104,6 +104,30 @@
   margin-right: 1rem;
 }
 
+.menu-list {
+  background-color: white; /* Fondo blanco para el menú */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil para dar profundidad */
+
+  width: 200px; /* Ancho fijo del menú */
+}
+
+.menu-item {
+  padding: 10px 20px; /* Espaciado alrededor del texto de cada elemento del menú */
+  cursor: pointer; /* Cursor de mano para indicar que es clickeable */
+  font-size: 16px; /* Tamaño de letra adecuado */
+}
+
+.menu-item:hover {
+  background-color: #f5f5f5; /* Cambio de color de fondo al pasar el ratón */
+}
+
+
+
+.menu-divider {
+  border-top: 1px solid #eee; /* Estilo para el divisor */
+}
+
+
 @media screen and (max-width: 1290px) {
   .nav-menu {
     background-color: #ffffff;
