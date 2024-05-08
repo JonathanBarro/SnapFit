@@ -4,15 +4,25 @@ const mongoose = require("./config/mongooseSetup");
 const passport = require("passport");
 const userRoutes = require("./routes/userRoutes");
 const exerciseRoutes = require("./routes/exerciseRoutes");
-const { callOpenAI } = require("./routes/openai.js"); // Importa la función callOpenAI
+const { callOpenAI } = require("./routes/openai.js");
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3030;
 
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // limita cada IP a 100 solicitudes por ventana de tiempo
+  });
+  
+app.use(limiter);
 app.use(express.json());
 app.use(cors());
 app.use(passport.initialize());
 require('dotenv').config();
+app.use(helmet());
 
 // Importar rutas
 app.use("/users", userRoutes);

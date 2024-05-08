@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import Joi from '@hapi/joi';
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
@@ -11,8 +12,21 @@ const SignUp = () => {
   const [altura, setAltura] = useState('');
   const [frec_actividad_sem, setFrec_actividad_sem] = useState('');
   const [t_disponible, setT_disponible] = useState('');
-  const [r_comida, setR_comida] = useState([]);
+  const [r_comida, setR_comida] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Esquema de validación con Joi
+  const schema = Joi.object({
+    username: Joi.string().alphanum().min(3).max(30).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+    edad: Joi.number().integer().min(0).required(),
+    peso: Joi.number().min(0).required(),
+    altura: Joi.number().min(0).required(),
+    frec_actividad_sem: Joi.number().integer().required(),
+    t_disponible: Joi.number().integer().required(),
+    r_comida: Joi.string().optional()
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -25,14 +39,9 @@ const SignUp = () => {
       altura: setAltura,
       frec_actividad_sem: setFrec_actividad_sem,
       t_disponible: setT_disponible,
-      r_comida: value => setR_comida(value.split(',').map(item => item.trim())) // Split and trim the string to convert it into an array
+      r_comida: setR_comida
     };
-    const setter = setters[name];
-    if (setter) {
-      setter(value);
-    } else {
-      console.error(`Unknown form field: ${name}`);
-    }
+    setters[name](value);
   };
 
   const handleCancel = () => {
@@ -44,54 +53,38 @@ const SignUp = () => {
     setAltura('');
     setFrec_actividad_sem('');
     setT_disponible('');
-    setR_comida([]);
+    setR_comida('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!email.includes('@')) {
+    const user = { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, r_comida };
+    const { error } = schema.validate(user);
+
+    if (error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Por favor ingresa un correo electrónico válido.'
+        text: error.details[0].message // Muestra el primer error encontrado
       });
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3030/users/signup', {
-        username,
-        email,
-        password,
-        edad,
-        peso,
-        altura,
-        frec_actividad_sem,
-        t_disponible,
-        r_comida
-      });
+      const response = await axios.post('http://localhost:3030/users/signup', user);
       setIsLoading(false);
       if (response.status === 201) {
-        console.log('Usuario registrado:', response.data);
         Swal.fire({
           icon: 'success',
           title: '¡Registrado!',
           text: 'Registro completado con éxito.'
         });
         handleCancel(); // Limpia el formulario después del envío exitoso
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al registrar',
-          text: 'Error al registrar. Por favor, intenta de nuevo.',
-          footer: error.response ? JSON.stringify(error.response.data) : 'No hay información del error'
-        });
       }
     } catch (error) {
       setIsLoading(false);
-      console.error('Error al registrar:', error.response ? error.response.data : error);
       Swal.fire({
         icon: 'error',
         title: 'Error al registrar',
