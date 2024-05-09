@@ -7,6 +7,7 @@ const exerciseRoutes = require("./routes/exerciseRoutes");
 const { callOpenAI } = require("./routes/openai.js");
 const helmet = require('helmet');
 const limiter = require('./middleware/rateLimit.js');
+const weightRoutes  = require('./routes/weightRoutes.js')
 require('dotenv').config();
 
 
@@ -26,6 +27,7 @@ app.use(helmet());
 
 // Importar rutas
 app.use("/users", userRoutes);
+app.use("/weights", weightRoutes);
 app.use("/exercises", exerciseRoutes);
 
 app.get("/openai", async (req, res) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const Perfil = () => {
   const [inputs, setInputs] = useState({
@@ -28,9 +29,12 @@ const Perfil = () => {
       });
       setUserData(response.data);  // Guardamos los datos
     } catch (error) {
-      console.error("Error al cargar los datos del usuario:", error.response ? error.response.data : error);
-      alert(`Error al cargar los datos: ${error.response ? error.response.data.message : 'Error de conexión'}`);
-    }
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.response ? error.response.data.message : 'Error de conexión',
+      });
+       }
   };
 
   useEffect(() => {
@@ -47,13 +51,33 @@ const Perfil = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert('Datos actualizados correctamente!');
+
+      if (inputs.peso && inputs.peso !== userData.peso) {
+        await axios.post('http://localhost:3030/weights/updateWeight', {
+            userId: userData._id,
+            peso: inputs.peso
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        });
+    }
+
+      Swal.fire(
+        '¡Éxito!',
+        'Datos actualizados correctamente!',
+        'success'
+      );
       setUserData({ ...userData, ...updatedData }); // Actualizar userData con los cambios
       setInputs({}); // Limpiar inputs después de guardar
     } catch (error) {
-      console.error("Error al actualizar los datos del usuario:", error.response ? error.response.data : error);
-      alert(`Error al guardar los cambios: ${error.response ? error.response.data.message : 'Error de conexión'}`);
-    }
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al guardar los cambios',
+        text: error.response ? error.response.data.message : 'Error de conexión',
+      });
+        }
   };
 
   const handleChange = (e) => {

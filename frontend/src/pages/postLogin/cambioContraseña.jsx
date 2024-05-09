@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import { useNavigate  } from 'react-router-dom';
 
 const CambioPass = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Evita el comportamiento predeterminado del formulario
@@ -18,11 +21,21 @@ const CambioPass = () => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
-
-            alert('Contraseña actualizada correctamente!');
+            Swal.fire(
+              '¡Éxito!',
+              'Contraseña actualizada correctamente!',
+              'success'
+          ).then((result) => {
+            if (result.isConfirmed) {
+                navigate('/perfil');  // Usa navigate('/profile') para redirigir
+            }
+          });
         } catch (error) {
-            console.error("Error al actualizar la contraseña:", error.response ? error.response.data : error);
-            alert(`Error al actualizar la contraseña: ${error.response ? error.response.data.message : 'Error de conexión'}`);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al actualizar la contraseña',
+            text: error.response ? error.response.data.message : 'Error de conexión',
+        });
         }
     };
 

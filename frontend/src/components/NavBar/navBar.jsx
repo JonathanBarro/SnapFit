@@ -115,7 +115,7 @@ function NavBar() {
                 </MenuHandler>
                 <MenuList className="menu-list">
                   <MenuItem className="menu-item"> <NavLink to="/perfil">Mi perfil</NavLink></MenuItem>
-                  <MenuItem className="menu-item">Mi salud</MenuItem>
+                  <MenuItem className="menu-item"><NavLink to="/salud">Mi salud</NavLink></MenuItem>
                   <MenuItem className="menu-item">Nutrición</MenuItem>
                   <MenuItem className="menu-item">Ejercicios</MenuItem>
                   <hr className="menu-divider my-1" />

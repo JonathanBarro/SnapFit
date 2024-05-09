@@ -4,6 +4,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('../middleware/authenticateToken');
+const WeightTracking = require('../models/weightTracking');
 
 router.post('/login', async (req, res) => {
     try {
@@ -75,6 +76,13 @@ router.post('/signup', async (req, res) => {
             planEjercicioId
         });
         await newUser.save();
+
+        const newWeightTracking = new WeightTracking({
+            userId: newUser._id,
+            weights: [peso],
+            dates: [new Date()]
+        });
+        await newWeightTracking.save();
         
         res.status(201).json(newUser);
     } catch (error) {
@@ -86,7 +94,6 @@ router.post('/signup', async (req, res) => {
 router.get('/profile', authenticateToken, async (req, res) => {
     try {
         const user = await User.findById(req.user.userId).select('-createdAt -updatedAt -__v -_id -password'); 
-        console.log(user);
         if (!user) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
@@ -99,25 +106,44 @@ router.get('/profile', authenticateToken, async (req, res) => {
 
 
 router.post('/update', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Asumiendo que obtienes el userId del token
+    const { peso } = req.body;
+
     try {
-        // Filtrar campos no vacíos
         const updateData = {};
-        for (const key in req.body) {
-            if (req.body[key] !== '') {
+        Object.keys(req.body).forEach(key => {
+            if (req.body[key] !== '' && key !== 'userId') {
                 updateData[key] = req.body[key];
             }
-        }
+        });
 
-        const user = await User.findByIdAndUpdate(req.user.userId, updateData, { new: true });
+        const user = await User.findByIdAndUpdate(userId, updateData, { new: true });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+
+        // Solo actualizar peso si se proporciona
+        if (peso) {
+            await WeightTracking.findOneAndUpdate(
+                { userId: userId },
+                {
+                    $push: {
+                        weights: peso,
+                        dates: new Date()
+                    }
+                },
+                { new: true }
+            );
+        }
+
         res.json({ message: "User updated", user });
     } catch (error) {
-        console.error("Update Error:", error);
-        res.status(500).json({ message: "Error updating user" });
+        console.error("Error updating user:", error);
+        res.status(500).json({ message: "Error updating user", error });
     }
 });
+
+
 
 router.post('/changePassword', authenticateToken, async (req, res) => {
     try {

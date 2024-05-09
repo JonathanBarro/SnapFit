@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Joi from '@hapi/joi';
+import { useNavigate  } from 'react-router-dom';
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
@@ -14,6 +15,7 @@ const SignUp = () => {
   const [t_disponible, setT_disponible] = useState('');
   const [r_comida, setR_comida] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Esquema de validación con Joi
   const schema = Joi.object({
@@ -80,6 +82,10 @@ const SignUp = () => {
           icon: 'success',
           title: '¡Registrado!',
           text: 'Registro completado con éxito.'
+        }).then((result) => {
+          if (result.isConfirmed) {
+              navigate('/login');  // Usa navigate('/profile') para redirigir
+          }
         });
         handleCancel(); // Limpia el formulario después del envío exitoso
       }
