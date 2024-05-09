@@ -18,14 +18,14 @@ const SignUp = () => {
   // Esquema de validación con Joi
   const schema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
-    email: Joi.string().email().required(),
+    email: Joi.string().pattern(new RegExp('^\\S+@(\\S+\\.com|\\S+\\.es)$')).required(),
     password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
     edad: Joi.number().integer().min(0).required(),
     peso: Joi.number().min(0).required(),
     altura: Joi.number().min(0).required(),
     frec_actividad_sem: Joi.number().integer().required(),
     t_disponible: Joi.number().integer().required(),
-    r_comida: Joi.string().optional()
+    r_comida: Joi.string().allow('').optional()
   });
 
   const handleChange = (event) => {

@@ -7,6 +7,7 @@
   top: 0;
   width: 100%;
   position: sticky;
+  z-index: 1000;
 }
 
 
@@ -107,12 +108,12 @@
 .menu-list {
   background-color: white; /* Fondo blanco para el menú */
   box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil para dar profundidad */
-
   width: 200px; /* Ancho fijo del menú */
+  padding-top: 1.6%;
 }
 
 .menu-item {
-  padding: 10px 20px; /* Espaciado alrededor del texto de cada elemento del menú */
+  padding: 20px 30px; /* Espaciado alrededor del texto de cada elemento del menú */
   cursor: pointer; /* Cursor de mano para indicar que es clickeable */
   font-size: 16px; /* Tamaño de letra adecuado */
 }
@@ -124,7 +125,7 @@
 
 
 .menu-divider {
-  border-top: 1px solid #eee; /* Estilo para el divisor */
+  border-top: 2px solid #eee; /* Estilo para el divisor */
 }
 
 

@@ -114,7 +114,7 @@ function NavBar() {
                     className="bttn-color text-sm flex items-center gap-3 text-#712ce0"> Menu</Button>
                 </MenuHandler>
                 <MenuList className="menu-list">
-                  <MenuItem className="menu-item">Mi perfil</MenuItem>
+                  <MenuItem className="menu-item"> <NavLink to="/perfil">Mi perfil</NavLink></MenuItem>
                   <MenuItem className="menu-item">Mi salud</MenuItem>
                   <MenuItem className="menu-item">Nutrición</MenuItem>
                   <MenuItem className="menu-item">Ejercicios</MenuItem>

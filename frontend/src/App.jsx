@@ -11,6 +11,9 @@ import Footer from "./components/Footer/footer";
 import Suplements from "./pages/suplements";
 import NavBar from "./components/NavBar/navBar";
 import SignUp from "./pages/signup";
+import Perfil from "./pages/postLogin/perfil";
+import Salud from "./pages/postLogin/salud"
+import CambioPass from "./pages/postLogin/cambioContraseña";
 import './components/Footer/footer.scss'; // Ajusta la ruta según donde coloques el archivo
 
 
@@ -31,6 +34,9 @@ function App() {
             <Route path='/learnnutrition' element={<LearNutrititon />}></Route>
             <Route path='/notfound' element={<NotFoud/>}></Route>
             <Route path='/suplements' element={<Suplements/>}></Route>
+            <Route path='/perfil' element={<Perfil/>}></Route>
+            <Route path='/salud' element={<Salud/>}></Route>
+            <Route path='/changePasswor' element={<CambioPass/>}></Route>
             <Route path='*' element={<Navigate to="/notfound"/>}></Route>
           </Routes>
         </div>
