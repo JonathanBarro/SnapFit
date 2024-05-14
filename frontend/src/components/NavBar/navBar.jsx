@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import UserContext from "../UserContext"; // Importa correctamente el contexto
+import UserContext from "../../context/UserContext"; // Importa correctamente el contexto
 import {
   Menu,
   MenuHandler,
@@ -25,10 +25,14 @@ function NavBar() {
     navigate("/login"); // Redirige al usuario a la página de login
   };
 
+  const handleMenuItemClick = () => {
+    handleClick(); // Cierra el menú
+  };
+
   return (
     <nav className="navbar bg-gradient-to-r from-violet-500 to-fuchsia-500">
       <div className="nav-container">
-        <a className="nav-logo" href="/">
+        <a className="nav-logo">
           <span className="icon">
             <Logo />
           </span>
@@ -111,13 +115,13 @@ function NavBar() {
                 <MenuHandler>
                   <Button 
                     variant="gradient"
-                    className="bttn-color text-sm flex items-center gap-3 text-#712ce0"> Menu</Button>
+                    className="bttn-color text-sm flex items-center gap-3 text-#712ce0 mt-0.5"> Menu</Button>
                 </MenuHandler>
-                <MenuList className="menu-list">
-                  <MenuItem className="menu-item"> <NavLink to="/perfil">Mi perfil</NavLink></MenuItem>
-                  <MenuItem className="menu-item"><NavLink to="/salud">Mi salud</NavLink></MenuItem>
-                  <MenuItem className="menu-item">Nutrición</MenuItem>
-                  <MenuItem className="menu-item">Ejercicios</MenuItem>
+                <MenuList className="menu-list mt-5">
+                  <MenuItem className="menu-item" onClick={handleMenuItemClick}> <NavLink to="/perfil">Mi perfil</NavLink></MenuItem>
+                  <MenuItem className="menu-item" onClick={handleMenuItemClick}><NavLink to="/salud">Progresión</NavLink></MenuItem>
+                  <MenuItem className="menu-item" onClick={handleMenuItemClick}><NavLink to="/salud">Nutrición</NavLink></MenuItem>
+                  <MenuItem className="menu-item" onClick={handleMenuItemClick}><NavLink to="/ejercicios">Ejercicios</NavLink></MenuItem>
                   <hr className="menu-divider my-1" />
                   <MenuItem className="menu-item" onClick={handleLogout}>Cerrar sesión</MenuItem>
                 </MenuList>
@@ -130,6 +134,7 @@ function NavBar() {
                   <Button
                     variant="gradient"
                     className="bttn-color text-sm flex items-center gap-3 text-#712ce0"
+                    onClick={handleMenuItemClick}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -154,6 +159,7 @@ function NavBar() {
                   <Button
                     variant="gradient"
                     className="bttn-color text-sm flex items-center gap-3 text-#712ce0"
+                    onClick={handleMenuItemClick}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

@@ -1,24 +1,28 @@
 const jwt = require('jsonwebtoken');
 
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+    const authHeader = req.headers['authorization'];
+    console.log("Authorization Header Received:", authHeader);  // Log del encabezado recibido
 
-  console.log('Authorization Header:', authHeader);
-  if (!token) {
-      console.log('Token not provided');
-      return res.sendStatus(401); // Unauthorized
-  }
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log("Token Extracted:", token);  // Log del token extraído
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-          console.log('Failed to authenticate token', err);
-          return res.status(403).json({ error: "Forbidden", details: err.message }); // Forbidden - invalid token
-      }
-      req.user = decoded; // Assuming `decoded` contains user data like { userId: userId }
-      next();
-  });
+    if (!token) {
+        return res.status(401).send("Token not provided");
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            console.log("Token Verification Error:", err.message);  // Log del error de verificación
+            return res.status(403).send("Invalid token");
+        }
+        console.log("Token Verified, User ID:", user.userId);  // Log de la información del usuario decodificada
+        req.user = user;
+        next();
+    });
 };
+
+
 
 
 module.exports = authenticateToken;

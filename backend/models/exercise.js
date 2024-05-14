@@ -1,41 +1,25 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const exerciseSchema = new mongoose.Schema(
-  {
-    descripcion: { type: String, required: true },
-    rutina: [
-      {
-        dia: { type: String, required: true },
-        ejercicios: [
-          {
-            nombre: { type: String, required: true },
-            tipo: { type: String, enum: ["cardio", "fuerza"], required: true },
-            duracion: {
-              type: Number,
-              required: function() { return this.tipo === "cardio"; },
-              min: 1 // Asegura que la duración no sea menor de 1 minuto si es necesario
-            },
-            series: {
-              type: Number,
-              required: function() { return this.tipo === "fuerza"; }
-            },
-            repeticiones: {
-              type: Number,
-              required: function() { return this.tipo === "fuerza"; }
-            }
-          }
-        ]
-      }
-    ],
-    usuarioId: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "User",
-      required: true
-    }
-  },
-  {
-    timestamps: true  // Automáticamente añade campos para createdAt y updatedAt
-  }
-);
+const actividadSchema = new mongoose.Schema({
+    nombre: String,
+    series: Number,
+    repeticiones: Number,
+    duracion: Number, // Duración en minutos, si aplica
+    detalles: [String], // Para detalles adicionales como tipos de ejercicios en HIIT
+    ejercicios: [String] // Lista de ejercicios para circuitos y similares
+});
 
-module.exports = mongoose.model("Exercise", exerciseSchema);
+const diaSchema = new mongoose.Schema({
+    dia: Number, // Número del día en la rutina (ej. Día 1, Día 2, etc.)
+    actividades: [actividadSchema] // Actividades planificadas para ese día
+});
+
+const rutinaSchema = new mongoose.Schema({
+    dias: Number, // Total de días en la rutina
+    objetivo: String, // Descripción del objetivo (pérdida de peso, ganar masa, etc.)
+    diasRutina: [diaSchema] // Arreglo de 'diaSchema' para cada día en la rutina
+});
+
+const Rutina = mongoose.model('Rutina', rutinaSchema);
+
+module.exports = Rutina;

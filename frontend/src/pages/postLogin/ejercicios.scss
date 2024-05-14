@@ -1,0 +1,57 @@
+/* src/components/Ejercicios.css */
+.ejercicio-container {
+  max-width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f4f4f4;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow-x: auto; /* Permite desplazamiento horizontal si la tabla es demasiado ancha */
+}
+
+.ejercicio-container h1 {
+  text-align: center;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+th {
+  background-color: #b699e4;
+  color: white;
+}
+
+td {
+  background-color: #f9f9f9;
+}
+
+.header-style {
+  color: #b699e4;
+  text-align: center;
+  font-size: 35px;/* Ajusta el tamaño de la fuente basado en el ancho de la vista, lo hace responsivo */
+}
+
+@media (max-width: 768px) {
+  .ejercicio-container {
+    padding: 10px; /* Reduce el padding en dispositivos más pequeños */
+  }
+
+  th, td {
+    padding: 5px; /* Reduce el espacio en celdas para dispositivos pequeños */
+    font-size: 12px; /* Reduce el tamaño de la fuente para mejorar la visibilidad */
+  }
+
+  .header-style {
+    font-size: 25px;/* Ajusta el tamaño de la fuente basado en el ancho de la vista, lo hace responsivo */
+  }
+}

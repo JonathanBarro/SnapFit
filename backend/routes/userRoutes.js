@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('../middleware/authenticateToken');
 const WeightTracking = require('../models/weightTracking');
+const asignarRutinaAUsuario = require('../utils/rutinaAsignada');
+
 
 router.post('/login', async (req, res) => {
     try {
@@ -50,7 +52,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/signup', async (req, res) => {
     try {
-        const { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, r_comida, planNutricionalId, planEjercicioId } = req.body;
+        const { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, objetivo, r_comida, planNutricionalId, planEjercicioId } = req.body;
 
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
@@ -71,6 +73,7 @@ router.post('/signup', async (req, res) => {
             altura,
             frec_actividad_sem,
             t_disponible,
+            objetivo,
             r_comida,
             planNutricionalId,
             planEjercicioId
@@ -83,10 +86,15 @@ router.post('/signup', async (req, res) => {
             dates: [new Date()]
         });
         await newWeightTracking.save();
+        console.log("Peso regis");
+
+        await asignarRutinaAUsuario(newUser._id, objetivo, t_disponible);
+        console.log("Rutina asignada");
         
         res.status(201).json(newUser);
     } catch (error) {
         res.status(500).json({ message: "Error al crear el usuario", error });
+        console.error("Error en el proceso de signup:", error);
     }
 });
 
@@ -106,23 +114,28 @@ router.get('/profile', authenticateToken, async (req, res) => {
 
 
 router.post('/update', authenticateToken, async (req, res) => {
-    const userId = req.user.userId; // Asumiendo que obtienes el userId del token
-    const { peso } = req.body;
+    const userId = req.user.userId;
+    const { peso, t_disponible, objetivo, planEjercicioId } = req.body;
 
     try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Determinar si se necesita una nueva rutina
+        const needsNewRoutine = t_disponible !== user.t_disponible || objetivo !== user.objetivo;
+
+        // Actualizar datos del usuario
         const updateData = {};
         Object.keys(req.body).forEach(key => {
             if (req.body[key] !== '' && key !== 'userId') {
                 updateData[key] = req.body[key];
             }
         });
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
 
-        const user = await User.findByIdAndUpdate(userId, updateData, { new: true });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // Solo actualizar peso si se proporciona
+        // Actualizar peso si se proporciona
         if (peso) {
             await WeightTracking.findOneAndUpdate(
                 { userId: userId },
@@ -136,12 +149,20 @@ router.post('/update', authenticateToken, async (req, res) => {
             );
         }
 
-        res.json({ message: "User updated", user });
+        // Asignar nueva rutina si es necesario
+        if (needsNewRoutine) {
+            // Asignar la nueva rutina
+            await asignarRutinaAUsuario(userId, updatedUser.objetivo, updatedUser.t_disponible);
+            // No es necesario actualizar el usuario aquí, ya que `asignarRutinaAUsuario` se encarga de esto
+        }
+
+        res.json({ message: "User updated", user: updatedUser });
     } catch (error) {
         console.error("Error updating user:", error);
         res.status(500).json({ message: "Error updating user", error });
     }
 });
+
 
 
 
@@ -166,5 +187,18 @@ router.post('/changePassword', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Error al actualizar la contraseña", error });
     }
 });
+
+router.get('/usuario/:userId/rutina', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId).populate('planEjercicioId');
+        if (!user) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+        res.json(user.planEjercicioId);
+    } catch (error) {
+        res.status(500).send('Error en el servidor');
+    }
+});
+
 
 module.exports = router; 

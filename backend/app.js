@@ -8,6 +8,8 @@ const { callOpenAI } = require("./routes/openai.js");
 const helmet = require('helmet');
 const limiter = require('./middleware/rateLimit.js');
 const weightRoutes  = require('./routes/weightRoutes.js')
+const authenticateToken = require('./middleware/authenticateToken.js')
+const authRoutes = require('./routes/authRoutes.js')
 require('dotenv').config();
 
 
@@ -26,9 +28,10 @@ app.use(passport.initialize());
 app.use(helmet());
 
 // Importar rutas
+app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
-app.use("/weights", weightRoutes);
-app.use("/exercises", exerciseRoutes);
+app.use("/weights",authenticateToken, weightRoutes);
+app.use("/exercises", authenticateToken, exerciseRoutes);
 
 app.get("/openai", async (req, res) => {
     try {

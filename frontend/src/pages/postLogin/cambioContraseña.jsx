@@ -20,7 +20,7 @@ const CambioPass = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
-            });
+            }); 
             Swal.fire(
               '¡Éxito!',
               'Contraseña actualizada correctamente!',

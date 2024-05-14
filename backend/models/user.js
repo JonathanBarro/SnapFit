@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     altura: { type: Number },
     frec_actividad_sem: { type: Number }, // Frecuencia de actividad semanal
     t_disponible: { type: Number }, // Tiempo disponible
+    objetivo:{ type: String },
     r_comida: [{ type: String }], // Restricciones alimentarias (puede ser un array de strings)
     planNutricionalId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     planEjercicioId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Exercise",
+      ref: "Rutina",
     },
   },
   {

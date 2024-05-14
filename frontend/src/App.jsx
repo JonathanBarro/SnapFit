@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { UserProvider } from './components/UserContext';
+import { UserProvider } from './context/UserContext';
 import Home from "./pages/home";
 import AboutUs from "./pages/oboutUs";
 import Tips from "./pages/tips";
@@ -15,6 +15,8 @@ import Perfil from "./pages/postLogin/perfil";
 import Salud from "./pages/postLogin/salud"
 import CambioPass from "./pages/postLogin/cambioContraseña";
 import './components/Footer/footer.scss'; // Ajusta la ruta según donde coloques el archivo
+import Ejercicios from "./pages/postLogin/ejercicios";
+import ProtectedRoute from "./components/protected/rutasProtejida"
 
 
 
@@ -34,8 +36,10 @@ function App() {
             <Route path='/learnnutrition' element={<LearNutrititon />}></Route>
             <Route path='/notfound' element={<NotFoud/>}></Route>
             <Route path='/suplements' element={<Suplements/>}></Route>
-            <Route path='/perfil' element={<Perfil/>}></Route>
-            <Route path='/salud' element={<Salud/>}></Route>
+            <Route path='/perfil' element={<ProtectedRoute><Perfil/></ProtectedRoute>}></Route>
+            <Route path='/salud' element={<ProtectedRoute><Salud/></ProtectedRoute>}></Route>
+            <Route path='/ejercicios' element={<ProtectedRoute><Ejercicios/></ProtectedRoute>}></Route>
+            
             <Route path='/changePasswor' element={<CambioPass/>}></Route>
             <Route path='*' element={<Navigate to="/notfound"/>}></Route>
           </Routes>

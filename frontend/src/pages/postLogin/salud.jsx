@@ -44,16 +44,20 @@ const Salud
           labels,
           datasets: [
             {
-              label: 'Weight over Time',
+              label: 'Progresión del peso',
               data,
               fill: false,
-              backgroundColor: 'rgb(75, 192, 192)',
-              borderColor: 'rgba(75, 192, 192, 0.2)',
+              backgroundColor: '#b699e4',
+              borderColor: '#b699e4',
             },
           ],
         });
       } catch (error) {
-        console.error('Error fetching weight data:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar la contraseña',
+          text: error.response ? error.response.data.message : 'Error en la obtención de datos del peso',
+      });
       }
     };
 
@@ -63,7 +67,7 @@ const Salud
   return (
 <div className="flex justify-center items-center min-h-screen">
       <div className="w-full max-w-4xl">
-        <h2 className="text-center text-2xl font-semibold text-gray-800 mb-4">Weight Tracking</h2>
+        <h2 className="text-center text-2xl font-semibold text-purple-400 mb-4">Progresión</h2>
         <div className="h-96">
           <Line data={chartData} options={{ maintainAspectRatio: false }} />
         </div>

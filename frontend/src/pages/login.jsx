@@ -3,7 +3,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import UserContext from '../components/UserContext'; // Asegúrate de que la ruta sea correcta
+import UserContext from '../context/UserContext'; // Asegúrate de que la ruta sea correcta
 import { useNavigate } from 'react-router-dom'; // Para redireccionar después del login
 
 const LogIn = () => {
@@ -58,12 +58,9 @@ const LogIn = () => {
 
   return (
     <section className="text-gray-600 body-font">
-      <div className="container px-5 py-24 mx-auto flex flex-wrap items-center">
-        <div className="lg:w-3/5 md:w-1/2 md:pr-16 lg:pr-0 pr-0">
-          <h1 className="title-font font-medium text-3xl text-gray-900">Inicio de Sesión Seguro</h1>
-          <p className="leading-relaxed mt-4">Por favor, inicia sesión para continuar.</p>
-        </div>
-        <div className="lg:w-2/6 md:w-1/2 bg-gray-100 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
+      <div className="container px-5 py-24 mx-auto flex flex-wrap items-center justify-center">
+
+        <div className="lg:w-2/5  bg-gray-100 rounded-lg p-8 flex flex-col w-full mt-10 md:mt-0">
           <h2 className="text-gray-900 text-lg font-medium title-font mb-5">Inicio de Sesión</h2>
           <form onSubmit={handleLogin}>
             <div className="relative mb-4">
@@ -93,7 +90,6 @@ const LogIn = () => {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 pt-6">
-                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
             </div>
             <button type="submit" className="text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg">Log In</button>
