@@ -28,11 +28,9 @@ router.get('/routine', authenticateToken, async (req, res) => {
     try {
         // Extrae el userId del objeto req.user, asumiendo que authenticateToken añade userId al objeto user.
         const userId = req.user.userId;
-        console.log("UserID from token:", userId);
 
         // Busca el documento de usuario por su ID
         const user = await User.findById(userId);
-        console.log("User document:", user);  // Ver qué contiene el documento de usuario
 
         if (!user) {
             return res.status(404).json({ message: "User not found." });
@@ -45,7 +43,6 @@ router.get('/routine', authenticateToken, async (req, res) => {
 
         // Encuentra la rutina específica usando el planEjercicioId almacenado en el documento del usuario
         const routine = await Rutina.findById(user.planEjercicioId);
-        console.log("Retrieved exercise plan:", routine);  // Imprime la rutina obtenida
 
         if (!routine) {
             return res.status(404).json({ message: "Routine not found." });
@@ -59,19 +56,5 @@ router.get('/routine', authenticateToken, async (req, res) => {
     }
 });
 
-
-
-
-
-
-// Eliminar una rutina específica
-router.delete('/:rutinaId', async (req, res) => {
-    try {
-        await Rutina.findByIdAndDelete(req.params.rutinaId);
-        res.status(204).send();
-    } catch (error) {
-        res.status(500).json({ message: "Error al eliminar la rutina", error });
-    }
-});
 
 module.exports = router;

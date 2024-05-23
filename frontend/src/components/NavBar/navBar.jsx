@@ -120,7 +120,7 @@ function NavBar() {
                 <MenuList className="menu-list mt-5">
                   <MenuItem className="menu-item" onClick={handleMenuItemClick}> <NavLink to="/perfil">Mi perfil</NavLink></MenuItem>
                   <MenuItem className="menu-item" onClick={handleMenuItemClick}><NavLink to="/salud">Progresión</NavLink></MenuItem>
-                  <MenuItem className="menu-item" onClick={handleMenuItemClick}><NavLink to="/salud">Nutrición</NavLink></MenuItem>
+                  <MenuItem className="menu-item" onClick={handleMenuItemClick}><NavLink to="/nutricion">Nutrición</NavLink></MenuItem>
                   <MenuItem className="menu-item" onClick={handleMenuItemClick}><NavLink to="/ejercicios">Ejercicios</NavLink></MenuItem>
                   <hr className="menu-divider my-1" />
                   <MenuItem className="menu-item" onClick={handleLogout}>Cerrar sesión</MenuItem>

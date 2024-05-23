@@ -1,4 +1,4 @@
-import Parrafo from "../components/parrafo";
+import Parrafo from "../../components/parrafo";
 
 const AboutUs = () => {
   return (

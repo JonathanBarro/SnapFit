@@ -13,8 +13,13 @@ const SignUp = () => {
   const [altura, setAltura] = useState("");
   const [frec_actividad_sem, setFrec_actividad_sem] = useState("");
   const [t_disponible, setT_disponible] = useState("");
-  const [r_comida, setR_comida] = useState("");
-  const [objetivo, setObjetivo] = useState(""); // Nuevo estado para el objetivo
+  const [restricciones, setRestricciones] = useState({
+    vegano: false,
+    celiaco: false,
+    vegetariano: false,
+  });
+  const [objetivo, setObjetivo] = useState("");
+  const [genero, setGenero] = useState(""); // Nuevo estado para el género
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -32,7 +37,7 @@ const SignUp = () => {
     altura: Joi.number().integer().min(0).required(),
     frec_actividad_sem: Joi.number().integer().required(),
     t_disponible: Joi.number().integer().min(1).required(),
-    r_comida: Joi.string().allow("").optional(),
+    r_comida: Joi.array().items(Joi.string()).required(),
     objetivo: Joi.string()
       .valid(
         "Perder peso",
@@ -41,12 +46,17 @@ const SignUp = () => {
         "Estilo de vida saludable"
       )
       .required(),
+    genero: Joi.string().valid("Masculino", "Femenino").required(), // Validación para género
   });
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    if (name === "objetivo") {
-      setObjetivo(value);
+    const { name, value, type, checked } = event.target;
+
+    if (name === "restricciones") {
+      setRestricciones(prev => ({
+        ...prev,
+        [value]: checked
+      }));
     } else {
       const setters = {
         username: setUsername,
@@ -57,7 +67,8 @@ const SignUp = () => {
         altura: setAltura,
         frec_actividad_sem: setFrec_actividad_sem,
         t_disponible: setT_disponible,
-        r_comida: setR_comida,
+        genero: setGenero, // Añadir el setter para género
+        objetivo: setObjetivo
       };
       setters[name](value);
     }
@@ -72,12 +83,21 @@ const SignUp = () => {
     setAltura("");
     setFrec_actividad_sem("");
     setT_disponible("");
-    setR_comida("");
-    setObjetivo(""); // Limpiar también el objetivo
+    setObjetivo("");
+    setGenero(""); // Resetear también el género
+    setRestricciones({
+      vegano: false,
+      celiaco: false,
+      vegetariano: false,
+    });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const restriccionesSeleccionadas = Object.entries(restricciones)
+      .filter(([_, value]) => value)
+      .map(([key, _]) => key);
 
     const user = {
       username,
@@ -88,16 +108,17 @@ const SignUp = () => {
       altura,
       frec_actividad_sem,
       t_disponible,
-      r_comida,
+      r_comida: restriccionesSeleccionadas,
       objetivo,
-    }; // Incluye el objetivo en el objeto user
-    const { error } = schema.validate(user);
+      genero, // Incluir género en el objeto user
+    };
 
+    const { error } = schema.validate(user);
     if (error) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: error.details[0].message, // Muestra el primer error encontrado
+        text: error.details[0].message,
       });
       return;
     }
@@ -116,10 +137,10 @@ const SignUp = () => {
           text: "Registro completado con éxito.",
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/login"); // Usa navigate('/profile') para redirigir
+            navigate("/login");
           }
         });
-        handleCancel(); // Limpia el formulario después del envío exitoso
+        handleCancel();
       }
     } catch (error) {
       setIsLoading(false);
@@ -133,7 +154,6 @@ const SignUp = () => {
       });
     }
   };
-
   return (
     <div className="mx-auto max-w-lg px-4">
       <div className="pt-16 pb-3">
@@ -184,7 +204,7 @@ const SignUp = () => {
                     autoComplete="given-name"
                     className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                     onChange={handleChange}
-                    placeholder="*****"
+                    placeholder="****"
                   />
                 </div>
               </div>
@@ -310,22 +330,25 @@ const SignUp = () => {
               </div>
 
               <div className="sm:col-span-3">
-                <label
-                  htmlFor="first-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
+                <label className="block text-sm font-medium leading-6 text-gray-900">
                   Restricciones alimenticias
                 </label>
                 <div className="mt-2">
-                  <input
-                    type="text"
-                    name="r_comida"
-                    value={r_comida}
-                    autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    placeholder=" Vegano, celiaco, alergico a..."
-                    onChange={handleChange}
-                  />
+                  {Object.keys(restricciones).map(key => (
+                    <div key={key}>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          name="restricciones"
+                          value={key}
+                          checked={restricciones[key]}
+                          onChange={handleChange}
+                          className="rounded border-gray-300 text-purple-600 shadow-sm"
+                        />
+                        <span className="ml-2 text-sm text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -343,7 +366,7 @@ const SignUp = () => {
                     onChange={handleChange}
                     className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
                   >
-                    <option value="">Selecciona un objetivo</option>
+                    <option></option>
                     <option value="Perder peso">Perder peso</option>
                     <option value="Ganar masa muscular">
                       Ganar masa muscular
@@ -357,6 +380,28 @@ const SignUp = () => {
                   </select>
                 </div>
               </div>
+
+              <div className="sm:col-span-3">
+              <label
+                htmlFor="genero"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Género
+              </label>
+              <div className="mt-2">
+                <select
+                  name="genero"
+                  value={genero}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
+                >
+                  <option ></option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Femenino">Femenino</option>
+                </select>
+              </div>
+            </div>
+
             </div>
           </div>
         </div>

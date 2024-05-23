@@ -3,7 +3,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import UserContext from '../context/UserContext'; // Asegúrate de que la ruta sea correcta
+import UserContext from '../../context/UserContext'; // Asegúrate de que la ruta sea correcta
 import { useNavigate } from 'react-router-dom'; // Para redireccionar después del login
 
 const LogIn = () => {
@@ -89,7 +89,8 @@ const LogIn = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 pt-6">
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 pt-7">
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
             </div>
             <button type="submit" className="text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg">Log In</button>

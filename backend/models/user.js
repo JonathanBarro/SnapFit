@@ -12,9 +12,14 @@ const userSchema = new mongoose.Schema(
     t_disponible: { type: Number }, // Tiempo disponible
     objetivo:{ type: String },
     r_comida: [{ type: String }], // Restricciones alimentarias (puede ser un array de strings)
+    genero:{ type: String },
+    kcals: { type: Number },
+    proteinas: { type: Number },
+    carbs: { type: Number },
+    grasas: { type: Number },
     planNutricionalId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Nutrition",
+      ref: "Dieta",
     },
     planEjercicioId: {
       type: mongoose.Schema.Types.ObjectId,

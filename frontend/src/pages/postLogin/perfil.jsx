@@ -12,11 +12,16 @@ const Perfil = () => {
     altura: "",
     frec_actividad_sem: "",
     t_disponible: "",
-    r_comida: "",
+    r_comida: [],
+    objetivo: "",
+    genero: "",  // Estado inicial para género
   });
 
-  // Carga inicial de datos del usuario para referencia, no para mostrar en inputs
   const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
@@ -27,28 +32,25 @@ const Perfil = () => {
           "Content-Type": "application/json",
         },
       });
-      setUserData(response.data); // Guardamos los datos
+      const data = response.data;
+      setUserData(data);
+      setInputs({
+        ...data,
+        r_comida: data.r_comida || []  // Asegura que r_comida es un array incluso si es undefined/null
+      });
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: error.response
-          ? error.response.data.message
-          : "Error de conexión",
+        text: error.response ? error.response.data.message : "Error de conexión",
       });
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleSaveChanges = async () => {
     const token = localStorage.getItem("token");
     try {
-      const updatedData = Object.fromEntries(
-        Object.entries(inputs).filter(([key, value]) => value !== "")
-      );
+      const updatedData = { ...inputs };
       const response = await axios.post(
         "http://localhost:3030/users/update",
         updatedData,
@@ -77,102 +79,113 @@ const Perfil = () => {
       }
 
       Swal.fire("¡Éxito!", "Datos actualizados correctamente!", "success");
-      setUserData({ ...userData, ...updatedData }); // Actualizar userData con los cambios
-      setInputs({}); // Limpiar inputs después de guardar
+      fetchData();  // Recarga los datos para sincronizar los estados
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error al guardar los cambios",
-        text: error.response
-          ? error.response.data.message
-          : "Error de conexión",
+        text: error.response ? error.response.data.message : "Error de conexión",
       });
     }
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      setInputs((prev) => ({
+        ...prev,
+        r_comida: checked
+          ? [...prev.r_comida, value]
+          : prev.r_comida.filter((item) => item !== value),
+      }));
+    } else {
+      setInputs((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  const fieldNames = {
-    username: "Usuario",
+  const foodRestrictions = ["vegano", "celiaco", "vegetariano"];
+  const objectives = [
+    "Perder peso", 
+    "Ganar masa muscular", 
+    "Mejorar salud cardiovascular", 
+    "Estilo de vida saludable"
+  ];
+
+  const labels = {
+    username: "Nombre de usuario",
     email: "Email",
     edad: "Edad",
-    peso: "Peso",
-    altura: "Altura",
-    frec_actividad_sem: "Actividad Semanal",
-    t_disponible: "Tiempo Disponible de Entrenamiento",
-    r_comida: "Restricciones Alimentarias",
-  };
-
-  const fieldUnits = {
-    edad: " años",
-    peso: " Kg",
-    altura: " cm",
+    peso: "Peso (Kg)",
+    altura: "Altura (cm)",
+    frec_actividad_sem: "Frecuencia de actividad semanal",
+    t_disponible: "Tiempo disponible para hacer ejercicio",
+    objetivo: "Objetivo",
+    genero: "Género"
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="flex w-full md:w-2/5 mx-auto bg-gray-50 shadow-lg rounded-lg overflow-hidden flex-col items-center p-5">
-        <div className="w-full">
-          <h2 className="text-gray-900 text-3xl font-medium title-font mb-5">
-            Datos de Usuario
-          </h2>
-          {Object.entries(fieldNames).map(([key, label]) => (
-            <div className="relative mb-4" key={key}>
-              <label className="leading-7 text-lg text-gray-600">
-                {label} : {userData[key] || "No disponible"}{" "}
-                {fieldUnits[key] || ""}
-              </label>
+        <h2 className="text-gray-900 text-3xl font-medium title-font mb-5">
+          Datos de {inputs.username || "Usuario"}
+        </h2>
+        {Object.entries(inputs).filter(([key]) => key !== 'r_comida').map(([key, value]) => (
+          <div key={key} className="mb-4 w-full">
+            <label className="block text-sm font-medium text-gray-700">{labels[key]}</label>
+            {key === 'objetivo' || key === 'genero' ? (
+              <select
+                name={key}
+                value={value}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 py-2 px-3"
+              >
+                <option value="">{key === 'genero' ? 'Selecciona tu género' : 'Selecciona tu objetivo'}</option>
+                {(key === 'objetivo' ? objectives : ['Masculino', 'Femenino']).map(option => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            ) : (
               <input
                 type="text"
                 name={key}
-                value={inputs[key] || ""}
+                value={value}
                 onChange={handleChange}
-                className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                placeholder={`Introduce nuevo valor para ${label}`}
+                className="mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50 py-2 px-3"
+                placeholder={`Introduce nuevo valor para ${key}`}
               />
+            )}
+          </div>
+        ))}
+        <div className="mb-4 w-full">
+          <label className="block text-sm font-medium text-gray-700">Restricciones Alimentarias</label>
+          {foodRestrictions.map(restriction => (
+            <div key={restriction}>
+              <label className="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  name="r_comida"
+                  value={restriction}
+                  checked={inputs.r_comida.includes(restriction)}  // Establece el estado checked basado en si está incluido
+                  onChange={handleChange}
+                  className="rounded border-purple-500 text-purple-600 shadow-sm"
+                />
+                <span className="ml-2 text-sm text-gray-700">{restriction}</span>
+              </label>
             </div>
           ))}
-
-          <div className="relative mb-4" key="objetivo">
-            <label className="leading-7 text-lg text-gray-600">Objetivo</label>
-            <select
-              name="objetivo"
-              value={inputs.objetivo || userData.objetivo}
-              onChange={handleChange}
-              className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            >
-              <option value="">Selecciona un objetivo</option>
-              <option value="Perder peso">Perder peso</option>
-              <option value="Ganar masa muscular">Ganar masa muscular</option>
-              <option value="Mejorar salud cardiovascular">
-                Mejorar salud cardiovascular
-              </option>
-              <option value="Estilo de vida saludable">
-                Estilo de vida saludable
-              </option>
-            </select>
-          </div>
-
-          <div className="flex justify-between space-x-4 mt-4">
-            <button
-              onClick={handleSaveChanges}
-              className="text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg flex-1 mr-2"
-            >
-              Guardar cambios
-            </button>
-            <NavLink to="/changePasswor">
-              <button className="text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg flex-1 ml-2">
-                Cambiar contraseña
-              </button>
-            </NavLink>
-          </div>
         </div>
+        <button
+          onClick={handleSaveChanges}
+          className="mt-4 text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg"
+        >
+          Guardar cambios
+        </button>
+        <NavLink to="/changePassword" className="mt-4 text-purple-500 hover:underline">
+          Cambiar contraseña
+        </NavLink>
       </div>
     </div>
   );

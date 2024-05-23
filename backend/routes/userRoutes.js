@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 const authenticateToken = require('../middleware/authenticateToken');
 const WeightTracking = require('../models/weightTracking');
 const asignarRutinaAUsuario = require('../utils/rutinaAsignada');
-
+const { calculadora } = require('../utils/calculadora');
+const  dietaAsignada  = require('../utils/dietaAsiganda');
 
 router.post('/login', async (req, res) => {
     try {
@@ -52,7 +53,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/signup', async (req, res) => {
     try {
-        const { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, objetivo, r_comida, planNutricionalId, planEjercicioId } = req.body;
+        const { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, objetivo, r_comida, genero, planNutricionalId, planEjercicioId } = req.body;
 
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
@@ -62,6 +63,10 @@ router.post('/signup', async (req, res) => {
 
         // Hashear la contraseña antes de guardar el usuario
         const hashedPassword = await bcrypt.hash(password, 12);
+
+        console.log(altura, peso, edad, objetivo, genero, frec_actividad_sem);  // Debug print to check inputs before calling the function
+        const resultadosNutricionales = calculadora(altura, peso, edad, objetivo, genero, frec_actividad_sem);
+        console.log(resultadosNutricionales);
 
         // Crear un nuevo usuario con todos los campos
         const newUser = new User({
@@ -75,10 +80,18 @@ router.post('/signup', async (req, res) => {
             t_disponible,
             objetivo,
             r_comida,
+            genero,
+            kcals: resultadosNutricionales.kcals,
+            proteinas: resultadosNutricionales.proteinas,
+            carbs: resultadosNutricionales.carbohidratos,
+            grasas: resultadosNutricionales.grasas,
             planNutricionalId,
             planEjercicioId
         });
         await newUser.save();
+
+        await dietaAsignada(newUser._id);
+        console.log("Dieta asignada");
 
         const newWeightTracking = new WeightTracking({
             userId: newUser._id,
@@ -101,7 +114,7 @@ router.post('/signup', async (req, res) => {
 // Ruta para obtener los detalles del usuario autenticado
 router.get('/profile', authenticateToken, async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId).select('-createdAt -updatedAt -__v -_id -password'); 
+        const user = await User.findById(req.user.userId).select('-createdAt -updatedAt -__v -_id -password -planEjercicioId -kcals -proteinas -carbs -grasas'); 
         if (!user) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
@@ -115,7 +128,8 @@ router.get('/profile', authenticateToken, async (req, res) => {
 
 router.post('/update', authenticateToken, async (req, res) => {
     const userId = req.user.userId;
-    const { peso, t_disponible, objetivo, planEjercicioId } = req.body;
+    const { peso, t_disponible, objetivo, planEjercicioId, altura, edad, genero, frec_actividad_sem } = req.body;
+
 
     try {
         const user = await User.findById(userId);
@@ -126,13 +140,27 @@ router.post('/update', authenticateToken, async (req, res) => {
         // Determinar si se necesita una nueva rutina
         const needsNewRoutine = t_disponible !== user.t_disponible || objetivo !== user.objetivo;
 
+        const resultadosNutricionales = calculadora(altura, peso, edad, objetivo, genero, frec_actividad_sem);
+
         // Actualizar datos del usuario
-        const updateData = {};
+        const updateData = {
+            // otros datos
+            kcals: resultadosNutricionales.kcals,
+            proteinas: resultadosNutricionales.proteinas,
+            carbs: resultadosNutricionales.carbohidratos,
+            grasas: resultadosNutricionales.grasas,
+        };
+    
+        // Actualizar usuario con nuevos valores
+    
         Object.keys(req.body).forEach(key => {
             if (req.body[key] !== '' && key !== 'userId') {
                 updateData[key] = req.body[key];
             }
         });
+
+
+        
         const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
 
         // Actualizar peso si se proporciona

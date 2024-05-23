@@ -10,6 +10,8 @@ const limiter = require('./middleware/rateLimit.js');
 const weightRoutes  = require('./routes/weightRoutes.js')
 const authenticateToken = require('./middleware/authenticateToken.js')
 const authRoutes = require('./routes/authRoutes.js')
+const nutricionRoute = require('./routes/nutricionRoutes.js')
+const dietaRoutes = require('./routes/dietaRoutes.js')
 require('dotenv').config();
 
 
@@ -32,6 +34,8 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/weights",authenticateToken, weightRoutes);
 app.use("/exercises", authenticateToken, exerciseRoutes);
+app.use("/nutricion", authenticateToken, nutricionRoute);
+app.use("/diet", authenticateToken, dietaRoutes);
 
 app.get("/openai", async (req, res) => {
     try {

@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 require('dotenv').config();  // Ensures that environment variables are loaded
 
 const uri = process.env.MONGODB_URI;
-console.log("MongoDB URI:", uri);  // This should now correctly display the URI
 
 if (!uri) {
   console.error("No MongoDB connection URI defined in .env");
