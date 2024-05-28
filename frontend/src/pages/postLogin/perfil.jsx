@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
+import './perfil.scss'; // Asegúrate de importar los estilos aquí
 
 const Perfil = () => {
   const [inputs, setInputs] = useState({
@@ -14,7 +15,7 @@ const Perfil = () => {
     t_disponible: "",
     r_comida: [],
     objetivo: "",
-    genero: "",  // Estado inicial para género
+    genero: "",
   });
 
   const [userData, setUserData] = useState({});
@@ -36,7 +37,7 @@ const Perfil = () => {
       setUserData(data);
       setInputs({
         ...data,
-        r_comida: data.r_comida || []  // Asegura que r_comida es un array incluso si es undefined/null
+        r_comida: data.r_comida || [],
       });
     } catch (error) {
       Swal.fire({
@@ -51,7 +52,7 @@ const Perfil = () => {
     const token = localStorage.getItem("token");
     try {
       const updatedData = { ...inputs };
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:3030/users/update",
         updatedData,
         {
@@ -79,7 +80,7 @@ const Perfil = () => {
       }
 
       Swal.fire("¡Éxito!", "Datos actualizados correctamente!", "success");
-      fetchData();  // Recarga los datos para sincronizar los estados
+      fetchData();
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -127,8 +128,8 @@ const Perfil = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="flex w-full md:w-2/5 mx-auto bg-gray-50 shadow-lg rounded-lg overflow-hidden flex-col items-center p-5">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="profile-container">
         <h2 className="text-gray-900 text-3xl font-medium title-font mb-5">
           Datos de {inputs.username || "Usuario"}
         </h2>
@@ -168,7 +169,7 @@ const Perfil = () => {
                   type="checkbox"
                   name="r_comida"
                   value={restriction}
-                  checked={inputs.r_comida.includes(restriction)}  // Establece el estado checked basado en si está incluido
+                  checked={inputs.r_comida.includes(restriction)}
                   onChange={handleChange}
                   className="rounded border-purple-500 text-purple-600 shadow-sm"
                 />

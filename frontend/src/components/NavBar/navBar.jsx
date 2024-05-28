@@ -87,7 +87,7 @@ function NavBar() {
           </li>
           
           {user ? (
-             <li className="bttn-item bttn-menu">
+            <li className="bttn-item bttn-menu">
               <Menu>
                 <MenuHandler>
                   <Button 
@@ -162,7 +162,6 @@ function NavBar() {
         <div className="nav-icon" onClick={handleClick}>
           {click ? <HamburgetMenuClose /> : <HamburgetMenuOpen />}
         </div>
-        
       </div>
     </nav>
   );
