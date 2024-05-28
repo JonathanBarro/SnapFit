@@ -7,7 +7,43 @@ const authenticateToken = require('../middleware/authenticateToken');
 const WeightTracking = require('../models/weightTracking');
 const asignarRutinaAUsuario = require('../utils/rutinaAsignada');
 const { calculadora } = require('../utils/calculadora');
-const  dietaAsignada  = require('../utils/dietaAsiganda');
+const axios = require('axios');
+const Dieta = require('../models/dieta');
+const Ejercicio = require("../models/exercise");
+
+async function callOpenAI(userInput) {
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: 'gpt-4',
+          messages: [{ role: 'user', content: userInput }],
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+  
+      const content = response.data.choices[0].message.content.trim();
+      console.log("Raw Response Content:", content);
+      // Intentar parsear la respuesta como JSON
+      let result;
+      try {
+        result = JSON.parse(content);
+      } catch (e) {
+        console.error(`Error parsing response as JSON: ${content}`, e);
+        throw new Error(`La respuesta no está en formato JSON: ${content}`);
+      }
+  
+      return result;
+    } catch (error) {
+      console.error('Error calling OpenAI:', error.message);
+      throw new Error(`OpenAI API call failed: ${error.message}`);
+    }
+  }
 
 router.post('/login', async (req, res) => {
     try {
@@ -51,65 +87,181 @@ router.post('/login', async (req, res) => {
 });
 
 
-router.post('/signup', async (req, res) => {
-    try {
-        const { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, objetivo, r_comida, genero, planNutricionalId, planEjercicioId } = req.body;
-
-        // Verificar si el usuario ya existe
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "El usuario ya existe" });
-        }
-
-        // Hashear la contraseña antes de guardar el usuario
-        const hashedPassword = await bcrypt.hash(password, 12);
-
-        console.log(altura, peso, edad, objetivo, genero, frec_actividad_sem);  // Debug print to check inputs before calling the function
-        const resultadosNutricionales = calculadora(altura, peso, edad, objetivo, genero, frec_actividad_sem);
-        console.log(resultadosNutricionales);
-
-        // Crear un nuevo usuario con todos los campos
-        const newUser = new User({
-            username,
-            email,
-            password: hashedPassword,
-            edad,
-            peso,
-            altura,
-            frec_actividad_sem,
-            t_disponible,
-            objetivo,
-            r_comida,
-            genero,
-            kcals: resultadosNutricionales.kcals,
-            proteinas: resultadosNutricionales.proteinas,
-            carbs: resultadosNutricionales.carbohidratos,
-            grasas: resultadosNutricionales.grasas,
-            planNutricionalId,
-            planEjercicioId
-        });
-        await newUser.save();
-
-        await dietaAsignada(newUser._id);
-        console.log("Dieta asignada");
-
-        const newWeightTracking = new WeightTracking({
-            userId: newUser._id,
-            weights: [peso],
-            dates: [new Date()]
-        });
-        await newWeightTracking.save();
-        console.log("Peso regis");
-
-        await asignarRutinaAUsuario(newUser._id, objetivo, t_disponible);
-        console.log("Rutina asignada");
-        
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(500).json({ message: "Error al crear el usuario", error });
-        console.error("Error en el proceso de signup:", error);
+async function generateDiet(userData) {
+    const prompt = `
+    Crear una dieta semanal indicando cantidad de cada ingrediente para un usuario con las siguientes características:
+    - Nombre de usuario: ${userData.username}
+    - Edad: ${userData.edad}
+    - Peso: ${userData.peso} kg
+    - Altura: ${userData.altura} cm
+    - Frecuencia de actividad semanal: ${userData.frec_actividad_sem} veces por semana
+    - Tiempo disponible para ejercicio: ${userData.t_disponible} horas a la semana
+    - Objetivo: ${userData.objetivo}
+    - Restricciones alimentarias: ${userData.r_comida.join(', ')}
+    - Género: ${userData.genero}
+    - Calorías diarias: ${userData.kcals}
+    - Proteínas diarias: ${userData.proteinas} g
+    - Carbohidratos diarios: ${userData.carbs} g
+    - Grasas diarias: ${userData.grasas} g
+  
+    Devuelve solo la respuesta en el siguiente formato JSON sin ninguna explicación ni palabra adicional:
+    {
+      "dieta": {
+        "days": [
+          {
+            "day": "lunes",
+            "meals": [
+              {
+                "meal": "desayuno",
+                "items": ["item1", "item2"]
+              },
+              {
+                "meal": "almuerzo",
+                "items": ["item1", "item2"]
+              },
+              {
+                "meal": "cena",
+                "items": ["item1", "item2"]
+              }
+            ]
+          },
+          ...
+        ]
+      }
     }
-});
+    `;
+  
+    const response = await callOpenAI(prompt);
+    return response;
+  }
+  
+  async function generateExercise(userData) {
+    const prompt = `
+    Crear un plan de ejercicios semanal para un usuario con las siguientes características:
+    - Nombre de usuario: ${userData.username}
+    - Edad: ${userData.edad}
+    - Peso: ${userData.peso} kg
+    - Altura: ${userData.altura} cm
+    - Frecuencia de actividad semanal: ${userData.frec_actividad_sem} veces por semana
+    - Tiempo disponible para ejercicio: ${userData.t_disponible} días a la semana (hacer rutinad de para estos días)
+    - Objetivo: ${userData.objetivo}
+    - Restricciones alimentarias: ${userData.r_comida.join(', ')}
+    - Género: ${userData.genero}
+    - Calorías diarias: ${userData.kcals}
+    - Proteínas diarias: ${userData.proteinas} g
+    - Carbohidratos diarios: ${userData.carbs} g
+    - Grasas diarias: ${userData.grasas} g
+  
+    Devuelve solo la respuesta en el siguiente formato JSON sin ninguna explicación ni palabra adicional:
+    {
+      "ejercicios": {
+        "days": [
+          {
+            "day": "lunes",
+            "exercises": [
+              {
+                "exercise": "ejercicio1",
+                "sets": 3,
+                "reps": 12
+              },
+              {
+                "exercise": "ejercicio2",
+                "sets": 3,
+                "reps": 12
+              }
+            ]
+          },
+          ...
+        ]
+      }
+    }
+    `;
+  
+
+    const response = await callOpenAI(prompt);
+    return response;
+  }
+  
+  router.post('/signup', async (req, res) => {
+    const { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, objetivo, r_comida, genero } = req.body;
+  
+    try {
+      // Calcular calorías y macronutrientes
+      const { kcals, proteinas, grasas, carbohidratos } = calculadora(altura, peso, edad, objetivo, genero, frec_actividad_sem);
+  
+      // Encriptar la contraseña
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      // Crear el nuevo usuario
+      const newUser = new User({
+        username,
+        email,
+        password: hashedPassword,
+        edad,
+        peso,
+        altura,
+        frec_actividad_sem,
+        t_disponible,
+        objetivo,
+        r_comida,
+        genero,
+        kcals,
+        proteinas,
+        carbs: carbohidratos,
+        grasas
+      });
+  
+      const savedUser = await newUser.save();
+  
+      // Generar dieta y tabla de ejercicios
+      const [dieta, ejercicios] = await Promise.all([
+        generateDiet({
+          username,
+          edad,
+          peso,
+          altura,
+          frec_actividad_sem,
+          t_disponible,
+          objetivo,
+          r_comida,
+          genero,
+          kcals,
+          proteinas,
+          carbs: carbohidratos,
+          grasas
+        }),
+        generateExercise({
+          username,
+          edad,
+          peso,
+          altura,
+          frec_actividad_sem,
+          t_disponible,
+          objetivo,
+          r_comida,
+          genero,
+          kcals,
+          proteinas,
+          carbs: carbohidratos,
+          grasas
+        })
+      ]);
+  
+      // Guardar la dieta y la tabla de ejercicios
+      const newDieta = new Dieta({ userId: savedUser._id, data: dieta });
+      const newEjercicio = new Ejercicio({ userId: savedUser._id, data: ejercicios });
+  
+      await newDieta.save();
+      await newEjercicio.save();
+  
+      // Responder al cliente
+      res.status(201).json({ message: 'Usuario registrado y datos generados con éxito', user: savedUser });
+  
+    } catch (error) {
+      console.error('Error en el registro:', error);
+      res.status(500).json({ error: 'Error en el registro del usuario' });
+    }
+  });
 
 // Ruta para obtener los detalles del usuario autenticado
 router.get('/profile', authenticateToken, async (req, res) => {

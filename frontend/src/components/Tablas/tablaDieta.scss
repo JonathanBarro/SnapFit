@@ -1,0 +1,34 @@
+.diet-table-container {
+    margin: 20px;
+    padding: 20px;
+
+
+  }
+  
+  .diet-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  .diet-table th, .diet-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #b699e4;
+    color: white;
+  }
+
+
+  
+  .diet-table tr:hover {
+    background-color: #ffffff;
+  }
+  
+  .diet-table td {
+    color: #666;
+  }
+  

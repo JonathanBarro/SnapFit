@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from 'prop-types';
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 const daysMapping = {
+  1: ["Lunes"],
   2: ["Lunes", "Miércoles"],
   3: ["Lunes", "Miércoles", "Viernes"],
   4: ["Lunes", "Martes", "Jueves", "Viernes"],
@@ -10,41 +13,11 @@ const daysMapping = {
   7: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
 };
 
-const TablaEjercicios = () => {
-  const [routine, setRoutine] = useState(null);
+const TablaEjercicios = ({ routine }) => {
+  const days = daysMapping[routine.days.length] || [];
 
-  useEffect(() => {
-    const fetchRoutine = async () => {
-      
-      const token = localStorage.getItem('token');
-      try {
-        const response = await axios.get(`http://localhost:3030/exercises/routine`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-        });
-        setRoutine(response.data);
-      } catch (error) {
-        console.error('Error fetching routine:', error);
-      }
-    };
-
-    fetchRoutine();
-  }, []);
-
-  if (!routine) {
-    return <div>Loading...</div>;
-  }
-  
-  if (!routine.diasRutina) {
-    return <div>No routine data available.</div>;
-  }
-
-  const days = daysMapping[routine.dias] || [];
-
-  // Calculate the rows needed by finding the day with the maximum number of activities
-  const maxActivities = Math.max(...routine.diasRutina.map(day => day.actividades.length));
+  // Calcular el número máximo de ejercicios en cualquier día
+  const maxExercises = Math.max(...routine.days.map(day => day.exercises.length));
 
   return (
     <table>
@@ -54,14 +27,14 @@ const TablaEjercicios = () => {
         </tr>
       </thead>
       <tbody>
-        {Array.from({ length: maxActivities }).map((_, rowIndex) => (
+        {Array.from({ length: maxExercises }).map((_, rowIndex) => (
           <tr key={rowIndex}>
-            {routine.diasRutina.map((day, dayIndex) => {
-              const activity = day.actividades[rowIndex];
+            {routine.days.map((day, dayIndex) => {
+              const exercise = day.exercises[rowIndex];
               return (
                 <td key={dayIndex}>
-                  {activity ? 
-                    `${activity.nombre} - ${activity.series ? `Series: ${activity.series}, Repeticiones: ${activity.repeticiones}` : `Duración: ${activity.duracion} minutos`}` 
+                  {exercise ? 
+                    `${exercise.exercise} - ${exercise.sets ? `Series: ${exercise.sets}, Repeticiones: ${exercise.reps}` : `Duración: ${exercise.duration}`}` 
                     : ' '
                   }
                 </td>
@@ -72,6 +45,24 @@ const TablaEjercicios = () => {
       </tbody>
     </table>
   );
+};
+
+TablaEjercicios.propTypes = {
+  routine: PropTypes.shape({
+    days: PropTypes.arrayOf(
+      PropTypes.shape({
+        day: PropTypes.string.isRequired,
+        exercises: PropTypes.arrayOf(
+          PropTypes.shape({
+            exercise: PropTypes.string.isRequired,
+            sets: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            reps: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            duration: PropTypes.string,
+          })
+        ).isRequired
+      })
+    ).isRequired
+  }).isRequired
 };
 
 export default TablaEjercicios;

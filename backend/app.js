@@ -50,4 +50,4 @@ mongoose.connectDB().then(() => {
 
 app.get("/debug", (req, res) => {
     res.send("Debug route is working!");
-});
+});  
