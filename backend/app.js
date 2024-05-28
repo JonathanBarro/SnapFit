@@ -4,7 +4,7 @@ const mongoose = require("./config/mongooseSetup");
 const passport = require("passport");
 const userRoutes = require("./routes/userRoutes");
 const exerciseRoutes = require("./routes/exerciseRoutes");
-const { callOpenAI } = require("./routes/openai.js");
+const openAIRoutes = require("./routes/openai.js");
 const helmet = require('helmet');
 const limiter = require('./middleware/rateLimit.js');
 const weightRoutes  = require('./routes/weightRoutes.js')
@@ -36,25 +36,7 @@ app.use("/weights",authenticateToken, weightRoutes);
 app.use("/exercises", authenticateToken, exerciseRoutes);
 app.use("/nutricion", authenticateToken, nutricionRoute);
 app.use("/diet", authenticateToken, dietaRoutes);
-
-app.get("/openai", async (req, res) => {
-    try {
-        const response = await callOpenAI();
-        res.json(response);
-    } catch (error) {
-        res.status(500).json({ error: "Error al llamar a la API de OpenAI" });
-    }
-});
-
-app.post("/openai", async (req, res) => {
-  try {
-      const response = await callOpenAI();
-      res.json(response.data);
-  } catch (error) {
-      console.error("API Call Error:", error.message);
-      res.status(500).json({ error: error.message });
-  }
-});
+app.use("/openai", openAIRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hola Mundo!");
@@ -64,4 +46,8 @@ mongoose.connectDB().then(() => {
     app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
     });
+});
+
+app.get("/debug", (req, res) => {
+    res.send("Debug route is working!");
 });

@@ -1,0 +1,28 @@
+// CardFotos.scss
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    width: 300px; // Puedes ajustar el ancho según necesites
+    margin: 15px;
+  }
+  
+  .card-img {
+    width: 100%;
+    height: 200px; // Ajusta según la proporción que desees
+    object-fit: cover;
+  }
+  
+  .card-body {
+    padding: 10px;
+  }
+  
+  .card-title {
+    font-size: 20px;
+    color: #333;
+  }
+  
+  .card-text {
+    font-size: 16px;
+    color: #666;
+  }
+  

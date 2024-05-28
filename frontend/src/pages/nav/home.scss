@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Century Gothic", 'Lato', sans-serif;
+  background-color: #f0f2f5;
+}
+
+.home-container {
+  width: 100%;
+  height: 100%;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: #d9edfd;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.text-overlay {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 20;
+  text-align: center;
+  max-width: 80%;
+  margin: auto;
+}
+
+.text-overlay h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 1rem;
+  color: white;
+}
+
+.text-overlay h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.3rem;
+  opacity: 0.6;
+  color: white;
+}
+
+.full-screen-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+  padding: 20px;
+}
+
+.info-section {
+  padding: 60px 20px;
+  background: #fff;
+  text-align: center;
+  color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin: 20px;
+  max-width: 900px;
+  width: 100%;
+}
+
+.info-section h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #c76dfc;
+}
+
+.info-section p {
+  font-size: 1.2em;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.signup-button {
+  position: relative;
+  display: inline-block;  
+  padding: 25px 30px;
+  margin: 40px 0;
+  color: #c76dfc;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: 0.5s;
+  letter-spacing: 4px;
+  overflow: hidden;
+  margin-right: 50px;
+
+  &:hover {
+    background: #c76dfc;
+    color: #ffffff;
+    box-shadow: 0 0 5px #c76dfc,
+                0 0 25px #c76dfc,
+                0 0 50px #c76dfc,
+                0 0 200px #c76dfc;
+     -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+  }
+
+  span {
+    position: absolute;
+    display: block;
+  }
+
+  span:nth-child(1) {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #9855c5);
+    animation: animate1 1s linear infinite;
+  }
+
+  span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #9855c5);
+    animation: animate2 1s linear infinite;
+    animation-delay: 0.25s;
+  }
+
+  span:nth-child(3) {
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #9855c5);
+    animation: animate3 1s linear infinite;
+    animation-delay: 0.50s;
+  }
+
+  span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #9855c5);
+    animation: animate4 1s linear infinite;
+    animation-delay: 0.75s;
+  }
+}
+
+@keyframes animate1 {
+  0% {
+    left: -100%;
+  }
+  50%, 100% {
+    left: 100%;
+  }
+}
+
+@keyframes animate2 {
+  0% {
+    top: -100%;
+  }
+  50%, 100% {
+    top: 100%;
+  }
+}
+
+@keyframes animate3 {
+  0% {
+    right: -100%;
+  }
+  50%, 100% {
+    right: 100%;
+  }
+}
+
+@keyframes animate4 {
+  0% {
+    bottom: -100%;
+  }
+  50%, 100% {
+    bottom: 100%;
+  }
+}
+
+/* Media queries para pantallas medianas y pequeñas */
+@media (max-width: 1200px) {
+  .text-overlay h1 {
+    font-size: 2.5rem;
+  }
+
+  .text-overlay h3 {
+    font-size: 1.2rem;
+  }
+
+  .info-section h2 {
+    font-size: 2rem;
+  }
+
+  .info-section p {
+    font-size: 1.1em;
+  }
+}
+
+@media (max-width: 768px) {
+  .text-overlay h1 {
+    font-size: 2rem;
+  }
+
+  .text-overlay h3 {
+    font-size: 1rem;
+  }
+
+  .info-section {
+    padding: 40px 15px;
+  }
+
+  .info-section h2 {
+    font-size: 1.8em;
+  }
+
+  .info-section p {
+    font-size: 1em;
+  }
+
+  .signup-button {
+    padding: 20px 25px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-overlay h1 {
+    font-size: 1.5rem;
+    letter-spacing: 0.5rem;
+  }
+
+  .text-overlay h3 {
+    font-size: 0.9rem;
+    letter-spacing: 0.2rem;
+  }
+
+  .info-section {
+    padding: 30px 10px;
+  }
+
+  .info-section h2 {
+    font-size: 1.5em;
+  }
+
+  .info-section p {
+    font-size: 0.9em;
+  }
+
+  .signup-button {
+    padding: 15px 20px;
+    font-size: 0.8rem;
+  }
+}

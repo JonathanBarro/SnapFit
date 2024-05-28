@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display|Source+Sans+Pro:200,400');
+
+.nutrition-page {
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+
+  p, a, button {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+
+  /* Generic styles */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  a, button {
+    background-color: goldenrod;
+    text-decoration: none;
+    color: white;
+    border: none;
+    border-radius: .25rem;
+    text-align: center;
+    display: inline-block;
+    transition: all .3s;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+  }
+
+  a:hover, button:hover {
+    opacity: .6;
+  }
+
+  /* Styles for the hero image */
+  .hero {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    padding: 4rem 2rem;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 70%);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .overlay h1,
+  .overlay article {
+    position: relative;
+    z-index: 20;
+    color: white;
+  }
+
+  .overlay h1 {
+    font-size: 4rem;
+    margin: 0;
+    flex: 1;
+  }
+
+  .overlay article {
+    max-width: 40%;
+    flex: 1;
+    text-align: start;
+    margin-left: 6%;
+    margin-right: 8%;
+  }
+
+  .overlay article > p {
+    font-size: 1.5rem;
+    font-weight: 200;
+  }
+
+  .breweries {
+    padding: 2rem;
+  }
+
+  .breweries > ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    list-style: none;
+  }
+
+  .breweries > ul > li {
+    border: 1px solid #E2E2E2;
+    border-radius: .5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    width: 50%; /* Increase the width to allow larger images */
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .breweries > ul > li > figure {
+    max-height: 300px; /* Increase the max height of the images */
+    overflow: hidden;
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+    position: relative;
+  }
+
+  .breweries > ul > li > figure > img {
+    width: 100%;
+    height: auto; /* Ensure the images maintain their aspect ratio */
+  }
+
+  .breweries > ul > li > figure > figcaption {
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0,0,0,.7);
+    width: 100%;
+  }
+
+  .breweries > ul > li > figure > figcaption > h3 {
+    color: white;
+    padding: .75rem;
+    font-size: 1.25rem;
+  }
+
+  .breweries > ul > li > .text-content {
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 1rem .75rem;
+    color: #666666;
+    text-align: left; /* Align text to the left for better readability */
+  }
+
+  .breweries > ul > li > .text-content ul {
+    padding-left: 2rem; /* Indent the bullet points */
+    list-style-type: disc; /* Ensure bullet points are used */
+  }
+
+  .breweries > ul > li > .text-content ul ul {
+    padding-left: 3rem; /* Indent the nested bullet points more */
+  }
+
+  .breweries > ul > li > .text-content ul ul li {
+    list-style-type: none; /* Remove bullet points from nested lists */
+  }
+
+  .breweries > ul > li > .text-content ul ul li:before {
+    content: "- "; /* Add dash before nested list items */
+  }
+
+  .extended-text {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #333;
+  }
+}

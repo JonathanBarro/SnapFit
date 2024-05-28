@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Joi from "@hapi/joi";
 import { useNavigate } from "react-router-dom";
+import './signup.scss';
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -19,43 +20,32 @@ const SignUp = () => {
     vegetariano: false,
   });
   const [objetivo, setObjetivo] = useState("");
-  const [genero, setGenero] = useState(""); // Nuevo estado para el género
+  const [genero, setGenero] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(1);
   const navigate = useNavigate();
 
-  // Esquema de validación con Joi
   const schema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
-    email: Joi.string()
-      .pattern(new RegExp("^\\S+@(\\S+\\.com|\\S+\\.es)$"))
-      .required(),
-    password: Joi.string()
-      .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
-      .required(),
+    email: Joi.string().pattern(new RegExp("^\\S+@(\\S+\\.com|\\S+\\.es)$")).required(),
+    password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
     edad: Joi.number().integer().min(0).required(),
     peso: Joi.number().min(0).required(),
     altura: Joi.number().integer().min(0).required(),
     frec_actividad_sem: Joi.number().integer().required(),
     t_disponible: Joi.number().integer().min(1).required(),
     r_comida: Joi.array().items(Joi.string()).required(),
-    objetivo: Joi.string()
-      .valid(
-        "Perder peso",
-        "Ganar masa muscular",
-        "Mejorar salud cardiovascular",
-        "Estilo de vida saludable"
-      )
-      .required(),
-    genero: Joi.string().valid("Masculino", "Femenino").required(), // Validación para género
+    objetivo: Joi.string().valid("Perder peso", "Ganar masa muscular", "Mejorar salud cardiovascular", "Estilo de vida saludable").required(),
+    genero: Joi.string().valid("Masculino", "Femenino").required(),
   });
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
 
     if (name === "restricciones") {
-      setRestricciones(prev => ({
+      setRestricciones((prev) => ({
         ...prev,
-        [value]: checked
+        [value]: checked,
       }));
     } else {
       const setters = {
@@ -67,8 +57,8 @@ const SignUp = () => {
         altura: setAltura,
         frec_actividad_sem: setFrec_actividad_sem,
         t_disponible: setT_disponible,
-        genero: setGenero, // Añadir el setter para género
-        objetivo: setObjetivo
+        genero: setGenero,
+        objetivo: setObjetivo,
       };
       setters[name](value);
     }
@@ -84,12 +74,13 @@ const SignUp = () => {
     setFrec_actividad_sem("");
     setT_disponible("");
     setObjetivo("");
-    setGenero(""); // Resetear también el género
+    setGenero("");
     setRestricciones({
       vegano: false,
       celiaco: false,
       vegetariano: false,
     });
+    setStep(1);
   };
 
   const handleSubmit = async (event) => {
@@ -110,7 +101,7 @@ const SignUp = () => {
       t_disponible,
       r_comida: restriccionesSeleccionadas,
       objetivo,
-      genero, // Incluir género en el objeto user
+      genero,
     };
 
     const { error } = schema.validate(user);
@@ -125,10 +116,7 @@ const SignUp = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:3030/users/signup",
-        user
-      );
+      const response = await axios.post("http://localhost:3030/users/signup", user);
       setIsLoading(false);
       if (response.status === 201) {
         Swal.fire({
@@ -148,281 +136,84 @@ const SignUp = () => {
         icon: "error",
         title: "Error al registrar",
         text: "Error al registrar. Por favor, intenta de nuevo.",
-        footer: error.response
-          ? JSON.stringify(error.response.data)
-          : "No hay información del error",
+        footer: error.response ? JSON.stringify(error.response.data) : "No hay información del error",
       });
     }
   };
+
+  const nextStep = () => {
+    setStep(step + 1);
+  };
+
+  const previousStep = () => {
+    setStep(step - 1);
+  };
+
   return (
-    <div className="mx-auto max-w-lg px-4">
-      <div className="pt-16 pb-3">
-        <h1 className="text-4xl font-bold text-white text-center py-4 bg-purple-500 d5Bcfc rounded-lg">
-          ¡Bienvenido a SnapFitnes!
-        </h1>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12 pt-10">
-            <h2 className="text-2xl font-semibold leading-7 text-gray-900">
-              Información personal
-            </h2>
-
-            <div className="border-t border-gray-900/10 pt-7 mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="first-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Nombre
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="username"
-                    value={username}
-                    autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    onChange={handleChange}
-                    placeholder="Usuario  "
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="first-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Contraseña
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="password"
-                    value={password}
-                    autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    onChange={handleChange}
-                    placeholder="****"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    name="email"
-                    value={email}
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    onChange={handleChange}
-                    placeholder="usuario@usuario.com"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="first-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Edad
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="edad"
-                    value={edad}
-                    autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    onChange={handleChange}
-                    placeholder="26"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="last-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Altura
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="altura"
-                    value={altura}
-                    autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    onChange={handleChange}
-                    placeholder="178 cm"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="first-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Peso
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="peso"
-                    value={peso}
-                    autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    onChange={handleChange}
-                    placeholder="80 kg"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="last-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Actividad
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="frec_actividad_sem"
-                    value={frec_actividad_sem}
-                    autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    onChange={handleChange}
-                    placeholder="3 días a la semana"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="first-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Días disponibles para entrenar
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="t_disponible"
-                    value={t_disponible}
-                    autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                    onChange={handleChange}
-                    placeholder="4 días a la semana"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label className="block text-sm font-medium leading-6 text-gray-900">
-                  Restricciones alimenticias
-                </label>
-                <div className="mt-2">
-                  {Object.keys(restricciones).map(key => (
-                    <div key={key}>
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          name="restricciones"
-                          value={key}
-                          checked={restricciones[key]}
-                          onChange={handleChange}
-                          className="rounded border-gray-300 text-purple-600 shadow-sm"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1)}</span>
-                      </label>
+    <div className="signup-wrapper bg-gradient-to-r from-fuchsia-300 to-violet-300">
+      <div className="signup-container">
+        <form id="msform" onSubmit={handleSubmit}>
+          <ul id="progressbar">
+            <li className={step === 1 ? "active" : ""}>Detalles Personales</li>
+            <li className={step === 2 ? "active" : ""}>Detalles de Salud</li>
+            <li className={step === 3 ? "active" : ""}>Configuración de Cuenta</li>
+          </ul>
+          {step === 1 && (
+            <fieldset>
+              <h2 className="fs-title">Detalles Personales</h2>
+              <h3 className="fs-subtitle">Cuéntanos algo más sobre ti</h3>
+              <input type="text" name="username" placeholder="Nombre" value={username} onChange={handleChange} />
+              <input type="text" name="edad" placeholder="Edad" value={edad} onChange={handleChange} />
+              <select name="genero" value={genero} onChange={handleChange}>
+                <option value="">Seleccione Género</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
+              <input type="button" name="next" className="next action-button" value="Siguiente" onClick={nextStep} />
+            </fieldset>
+          )}
+          {step === 2 && (
+            <fieldset>
+              <h2 className="fs-title">Detalles de Salud</h2>
+              <h3 className="fs-subtitle">Tu situación actual</h3>
+              <input type="text" name="peso" placeholder="Peso" value={peso} onChange={handleChange} />
+              <input type="text" name="altura" placeholder="Altura" value={altura} onChange={handleChange} />
+              <input type="text" name="frec_actividad_sem" placeholder="Frecuencia de Actividad" value={frec_actividad_sem} onChange={handleChange} />
+              <input type="text" name="t_disponible" placeholder="Tiempo Disponible" value={t_disponible} onChange={handleChange} />
+              <div className="restricciones">
+                <label>Restricciones alimenticias:</label>
+                <div className="restricciones-items">
+                  {Object.keys(restricciones).map((key) => (
+                    <div key={key} className="restriccion-item">
+                      <input type="checkbox" id={key} name="restricciones" value={key} checked={restricciones[key]} onChange={handleChange} />
+                      <label htmlFor={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
                     </div>
                   ))}
                 </div>
               </div>
-
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="objetivo"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Objetivo
-                </label>
-                <div className="mt-2">
-                  <select
-                    name="objetivo"
-                    value={objetivo}
-                    onChange={handleChange}
-                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                  >
-                    <option></option>
-                    <option value="Perder peso">Perder peso</option>
-                    <option value="Ganar masa muscular">
-                      Ganar masa muscular
-                    </option>
-                    <option value="Mejorar salud cardiovascular">
-                      Mejorar salud cardiovascular
-                    </option>
-                    <option value="Estilo de vida saludable">
-                      Estilo de vida saludable
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-              <label
-                htmlFor="genero"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Género
-              </label>
-              <div className="mt-2">
-                <select
-                  name="genero"
-                  value={genero}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6"
-                >
-                  <option ></option>
-                  <option value="Masculino">Masculino</option>
-                  <option value="Femenino">Femenino</option>
-                </select>
-              </div>
-            </div>
-
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 flex items-center justify-end gap-x-6">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isLoading} // Deshabilitar durante la carga
-            className="rounded-md bg-purple-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            {isLoading ? "Guardando..." : "Save"}
-          </button>
-        </div>
-      </form>
+              <input type="button" name="previous" className="previous action-button-previous" value="Anterior" onClick={previousStep} />
+              <input type="button" name="next" className="next action-button" value="Siguiente" onClick={nextStep} />
+            </fieldset>
+          )}
+          {step === 3 && (
+            <fieldset>
+              <h2 className="fs-title">Configuración de Cuenta</h2>
+              <h3 className="fs-subtitle">Llena tus credenciales</h3>
+              <input type="text" name="email" placeholder="Email" value={email} onChange={handleChange} />
+              <input type="password" name="password" placeholder="Contraseña" value={password} onChange={handleChange} />
+              <select name="objetivo" value={objetivo} onChange={handleChange}>
+                <option value="">Seleccione Objetivo</option>
+                <option value="Perder peso">Perder peso</option>
+                <option value="Ganar masa muscular">Ganar masa muscular</option>
+                <option value="Mejorar salud cardiovascular">Mejorar salud cardiovascular</option>
+                <option value="Estilo de vida saludable">Estilo de vida saludable</option>
+              </select>
+              <input type="button" name="previous" className="previous action-button-previous" value="Anterior" onClick={previousStep} />
+              <input type="submit" name="submit" className="submit action-button" value="Finalizar" />
+            </fieldset>
+          )}
+        </form>
+      </div>
     </div>
   );
 };

@@ -14,8 +14,7 @@ import "./navBar.scss";
 
 function NavBar() {
   const [click, setClick] = useState(false);
-  const { user, setUser } = useContext(UserContext);
-  console.log(user); // Esto te mostrará si `user` se actualiza cuando cambia el contexto
+  const { user, setUser } = useContext(UserContext); // Esto te mostrará si `user` se actualiza cuando cambia el contexto
   const navigate = useNavigate();
 
   const handleClick = () => setClick(!click);
@@ -56,17 +55,6 @@ function NavBar() {
           <li className="nav-item">
             <NavLink
               exact
-              to="/aboutus"
-              activeClassName="active"
-              className="nav-links"
-              onClick={handleClick}
-            >
-              About
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              exact
               to="/learnnutrition"
               activeClassName="active"
               className="nav-links"
@@ -89,17 +77,6 @@ function NavBar() {
           <li className="nav-item">
             <NavLink
               exact
-              to="/tips"
-              activeClassName="active"
-              className="nav-links"
-              onClick={handleClick}
-            >
-              Tips
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              exact
               to="/suplements"
               activeClassName="active"
               className="nav-links"
@@ -108,7 +85,7 @@ function NavBar() {
               Suplementación
             </NavLink>
           </li>
-
+          
           {user ? (
              <li className="bttn-item bttn-menu">
               <Menu>
@@ -185,6 +162,7 @@ function NavBar() {
         <div className="nav-icon" onClick={handleClick}>
           {click ? <HamburgetMenuClose /> : <HamburgetMenuOpen />}
         </div>
+        
       </div>
     </nav>
   );

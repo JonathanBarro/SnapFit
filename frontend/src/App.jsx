@@ -18,6 +18,7 @@ import './components/Footer/footer.scss'; // Ajusta la ruta según donde coloque
 import Ejercicios from "./pages/postLogin/ejercicios";
 import ProtectedRoute from "./components/protected/rutasProtejida"
 import Nutricion from "./pages/postLogin/nutricion";
+import ScrollToTop from "./components/scroll/scrollTop";
 
 
 
@@ -26,11 +27,10 @@ function App() {
     <UserProvider>
       <div className="app-container">
         <NavBar />
+        <ScrollToTop />
         <div className="content-wrap"> 
           <Routes>
             <Route path='/' element={<Home />}></Route>
-            <Route path='/aboutus' element={<AboutUs />}></Route>
-            <Route path='/tips' element={<Tips />}></Route>
             <Route path='/exercise' element={<Exercise />}></Route>
             <Route path='/login' element={<LogIn />}></Route>
             <Route path='/signup' element={<SignUp />}></Route>
