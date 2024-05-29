@@ -110,10 +110,8 @@ body {
   &:hover {
     background: #c76dfc;
     color: #ffffff;
-    box-shadow: 0 0 5px #c76dfc,
-                0 0 25px #c76dfc,
-                0 0 50px #c76dfc,
-                0 0 200px #c76dfc;
+    box-shadow: 0 0 70px #c76dfc;
+
      -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
   }
 

@@ -7,9 +7,9 @@ const Suplements = () => {
       <main className="wrapper">
         <section className="hero" style={{ backgroundImage: `url(${heroImage})` }}>
           <div className="overlay">
-            <h1>Nutrición</h1>
+            <h1>Suplementación</h1>
             <article>
-              <p>En este apartado aprenderás todo lo necesario sobre macronutrientes y calorías para saber qué cantidad y alimento es adecuada y por qué.</p>
+              <p>En este apartado te informarás sobre los diferentes suplementos.</p>
             </article>
           </div>
         </section>

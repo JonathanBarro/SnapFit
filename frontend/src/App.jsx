@@ -19,6 +19,7 @@ import Ejercicios from "./pages/postLogin/ejercicios";
 import ProtectedRoute from "./components/protected/rutasProtejida"
 import Nutricion from "./pages/postLogin/nutricion";
 import ScrollToTop from "./components/scroll/scrollTop";
+import ChatBot from "./components/chatBot/chatBot"
 
 
 
@@ -46,6 +47,7 @@ function App() {
           </Routes>
         </div>
         <Footer/>
+        <ChatBot />
       </div>
     </UserProvider>
   );

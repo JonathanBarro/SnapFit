@@ -4,14 +4,20 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 dotenv.config();
 
-async function callOpenAI(userInput) {
+async function callOpenAI(userInput, maxTokens = null) {
   try {
+    const requestData = {
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: userInput }],
+    };
+
+    if (maxTokens) {
+      requestData.max_tokens = maxTokens;
+    }
+
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-4',
-        messages: [{ role: 'user', content: userInput }],
-      },
+      requestData,
       {
         headers: {
           'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -21,14 +27,14 @@ async function callOpenAI(userInput) {
     );
 
     const content = response.data.choices[0].message.content.trim();
-    console.log("Raw Response Content:", content);
+
     // Intentar parsear la respuesta como JSON
     let result;
     try {
       result = JSON.parse(content);
     } catch (e) {
-      console.error(`Error parsing response as JSON: ${content}`, e);
-      throw new Error(`La respuesta no está en formato JSON: ${content}`);
+      console.warn(`Response is not a valid JSON, treating as plain text: ${content}`);
+      result = { text: content };
     }
 
     return result;
@@ -52,6 +58,16 @@ router.post('/', async (req, res) => {
 
 router.get('/debug', (req, res) => {
   res.send('OpenAI route is working!');
+});
+
+router.post('/chat', async (req, res) => {
+  const userInput = req.body.prompt;
+  try {
+    const response = await callOpenAI(userInput, 150);
+    res.json({ response });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.post('/prueba', async (req, res) => {

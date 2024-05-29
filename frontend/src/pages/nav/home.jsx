@@ -1,9 +1,13 @@
+import React, { useContext } from 'react';
 import './home.scss';
 import Hero from "../../components/Hero/hero";
 import CardFotos from '../../components/cards/cardHome';
 import { Link } from 'react-router-dom';
+import UserContext from '../../context/UserContext'; // Importa el contexto
 
 const Home = () => {
+  const { user } = useContext(UserContext); // Usa el contexto para obtener el usuario
+
   return (
     <div className="home-container">
       <div className="hero">
@@ -21,13 +25,15 @@ const Home = () => {
           <p>Nuestra web utiliza la información proporcionada por los usuarios para crear dietas personalizadas y planes de entrenamiento semanales que se adaptan a tus necesidades específicas. Pero no solo queremos guiarte; también queremos que aprendas y crezcas en el proceso.</p>
           <p>En SnapFit, encontrarás secciones dedicadas a la nutrición, el ejercicio y la suplementación. Aquí, podrás adquirir conocimientos desde cero y aprender a mantener un estilo de vida saludable sin depender de ninguna aplicación o web. Nuestro objetivo es empoderarte con el conocimiento necesario para que puedas llevar una vida saludable de forma independiente.</p>
           <p>Únete a SnapFit y transforma tu vida hoy.</p>
-          <Link exact to="/signup" className="signup-button">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            Regístrate
-          </Link>
+          {!user && ( // Solo muestra el botón si el usuario no está logueado
+            <Link to="/signup" className="signup-button">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              Regístrate
+            </Link>
+          )}
         </div>
       </div>
     </div>

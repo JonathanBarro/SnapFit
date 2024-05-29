@@ -1,0 +1,19 @@
+.video-card-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.video-card-list h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.video-card-list .group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 40px;
+}

@@ -34,6 +34,7 @@ const Perfil = () => {
         },
       });
       const data = response.data;
+      console.log('Fetched data:', data.r_comida); // Añadido para depuración
       setUserData(data);
       setInputs({
         ...data,
@@ -107,7 +108,7 @@ const Perfil = () => {
     }
   };
 
-  const foodRestrictions = ["vegano", "celiaco", "vegetariano"];
+  const foodRestrictions = ["Vegano", "Celiaco", "Vegetariano"];
   const objectives = [
     "Perder peso", 
     "Ganar masa muscular", 
@@ -162,31 +163,34 @@ const Perfil = () => {
         ))}
         <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700">Restricciones Alimentarias</label>
-          {foodRestrictions.map(restriction => (
-            <div key={restriction}>
-              <label className="inline-flex items-center">
+          <div className="restricciones-items">
+            {foodRestrictions.map(restriction => (
+              <div key={restriction} className="restriccion-item">
                 <input
                   type="checkbox"
+                  id={restriction}
                   name="r_comida"
                   value={restriction}
                   checked={inputs.r_comida.includes(restriction)}
                   onChange={handleChange}
                   className="rounded border-purple-500 text-purple-600 shadow-sm"
                 />
-                <span className="ml-2 text-sm text-gray-700">{restriction}</span>
-              </label>
-            </div>
-          ))}
+                <label htmlFor={restriction}>{restriction.charAt(0).toUpperCase() + restriction.slice(1)}</label>
+              </div>
+            ))}
+          </div>
         </div>
-        <button
-          onClick={handleSaveChanges}
-          className="mt-4 text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg"
-        >
-          Guardar cambios
-        </button>
-        <NavLink to="/changePassword" className="mt-4 text-purple-500 hover:underline">
-          Cambiar contraseña
-        </NavLink>
+        <div className="button-group">
+          <button
+            onClick={handleSaveChanges}
+            className="mt-4 text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg"
+          >
+            Guardar cambios
+          </button>
+          <NavLink to="/changePassword" className="mt-4 text-purple-500 hover:underline text-center block">
+            Cambiar contraseña
+          </NavLink>
+        </div>
       </div>
     </div>
   );
