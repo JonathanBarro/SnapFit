@@ -1,19 +1,154 @@
-.video-card-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+.titleClasses {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff; /* Cambia esto al color que desees */
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+h2{
+    color: #7b4feb;
+}
+.titleClasses:hover {
+    color: #e3cafa; /* Cambia esto al color que desees para el hover */
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.video-card {
+    max-width: 300px;
+    margin: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.video-card:hover {
+    transform: scale(1.05);
+}
+
+.video-card img {
     width: 100%;
+    height: auto;
 }
 
-.video-card-list h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
+.video-card-content {
+    padding: 16px;
 }
 
-.video-card-list .group {
+.video-card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.video-card-description {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 8px;
+}
+
+.aspect-w-16 {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.aspect-w-16 .w-full {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+// videoList.scss
+
+.info-video {
+    padding: 20px;
+    background: #fff;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 20px;
+    max-width: 1600px;
+    width: 100%;
+    text-align: justify;
+  }
+  
+  .info-video .flex-wrap {
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
-    justify-content: center;
+  }
+  
+  .video-card {
+    max-width: 23%; /* Ajusta el tamaño de las tarjetas para que quepan cuatro en una fila */
+    margin: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  
+  .video-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .video-card img {
     width: 100%;
-    margin-bottom: 40px;
-}
+    height: auto;
+  }
+  
+  .video-card-content {
+    padding: 16px;
+  }
+  
+  .video-card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #ffffff;
+  }
+  
+  .video-card-description {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 8px;
+  }
+  
+  .aspect-w-16 {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  }
+  
+  .aspect-w-16 .w-full {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .titleClasses {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff; /* Cambia esto al color que desees */
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+  }
+  
+  .titleClasses:hover {
+    color: #e3cafa; /* Cambia esto al color que desees para el hover */
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  }
+  

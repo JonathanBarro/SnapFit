@@ -12,7 +12,7 @@
   }
 
   body {
-    font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Roboto', sans-serif;
   }
 
   .wrapper {
@@ -22,11 +22,11 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Roboto', sans-serif;
   }
 
-  p, a, button {
-    font-family: 'Source Sans Pro', sans-serif;
+   a, button {
+    font-family: 'Roboto', sans-serif;
   }
 
   /* Generic styles */
@@ -35,7 +35,7 @@
   }
 
   a, button {
-    background-color: rgb(144, 52, 219);
+    background-color: #7b4feb;
     text-decoration: none;
     color: white;
     border: none;
@@ -57,6 +57,7 @@
     position: relative;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     padding: 4rem 2rem;
     height: 100vh;
     display: flex;
@@ -77,6 +78,43 @@
     align-items: center;
     text-align: center;
     padding: 2rem;
+  }
+
+  .full-screen-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+    padding: 20px;
+  }
+  
+  .info-section {
+    padding: 10px 20px;
+    background: #fff;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 20px;
+    max-width: 1300px;
+    width: 100%;
+    text-align: justify; /* Justificar el texto */
+  }
+  
+  .info-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #7b4feb;
+    text-align: center;
+    margin-top: 4%;
+    margin-bottom: 4%;
+  }
+  
+  .info-section p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #666;
   }
 
   .overlay h1,
@@ -102,86 +140,178 @@
 
   .overlay article > p {
     font-size: 1.5rem;
-    font-weight: 200;
+    font-weight: 500;
   }
 
-  .breweries {
-    padding: 2rem;
+  .supplements {
+    padding: 1rem;
   }
 
-  .breweries > ul {
+  .supplements > ul {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 0;
     list-style: none;
   }
 
-  .breweries > ul > li {
+  .supplements > ul > li {
     border: 1px solid #E2E2E2;
     border-radius: .5rem;
-    margin: 1rem 0;
+    margin: 1rem;
     padding: 1rem;
-    width: 50%; /* Increase the width to allow larger images */
+    width: calc(50% - 2rem);
     background: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
   }
 
-  .breweries > ul > li > figure {
-    max-height: 300px; /* Increase the max height of the images */
+  .supplements > ul > li > figure {
+    max-height: 300px;
     overflow: hidden;
     border-top-left-radius: .5rem;
     border-top-right-radius: .5rem;
     position: relative;
   }
 
-  .breweries > ul > li > figure > img {
+  .supplements > ul > li > figure > img {
     width: 100%;
-    height: auto; /* Ensure the images maintain their aspect ratio */
+    height: auto;
   }
 
-  .breweries > ul > li > figure > figcaption {
+  .supplements > ul > li > figure > figcaption {
     position: absolute;
     bottom: 0;
     background-color: rgba(0,0,0,.7);
     width: 100%;
   }
 
-  .breweries > ul > li > figure > figcaption > h3 {
+  .supplements > ul > li > figure > figcaption > h3 {
     color: white;
     padding: .75rem;
     font-size: 1.25rem;
   }
 
-  .breweries > ul > li > .text-content {
+  .supplements > ul > li > .text-content {
     font-size: 1rem;
     line-height: 1.5;
     padding: 1rem .75rem;
     color: #666666;
-    text-align: left; /* Align text to the left for better readability */
+    text-align: left;
   }
 
-  .breweries > ul > li > .text-content ul {
-    padding-left: 2rem; /* Indent the bullet points */
-    list-style-type: disc; /* Ensure bullet points are used */
+  .supplements > ul > li > .text-content ul {
+    padding-left: 2rem;
+    list-style-type: disc;
   }
 
-  .breweries > ul > li > .text-content ul ul {
-    padding-left: 3rem; /* Indent the nested bullet points more */
+  .supplements > ul > li > .text-content ul ul {
+    padding-left: 3rem;
   }
 
-  .breweries > ul > li > .text-content ul ul li {
-    list-style-type: none; /* Remove bullet points from nested lists */
+  .supplements > ul > li > .text-content ul ul li {
+    list-style-type: none;
   }
 
-  .breweries > ul > li > .text-content ul ul li:before {
-    content: "- "; /* Add dash before nested list items */
+  .supplements > ul > li > .text-content ul ul li:before {
+    content: "- ";
   }
 
   .extended-text {
     margin-top: 0.5rem;
     font-size: 0.9rem;
     color: #333;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .hero {
+      padding: 2rem 1rem;
+      height: 100vh;
+    }
+
+    .overlay h1 {
+      font-size: 3rem;
+    }
+
+    .overlay article {
+      max-width: 80%;
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+
+    .overlay article > p {
+      font-size: 2rem;
+    }
+
+    .supplements > ul > li {
+      width: 90%;
+      padding: 1rem;
+    }
+
+    .supplements > ul > li > .text-content {
+      font-size: 0.9rem;
+    }
+    .info-section {
+        padding: 40px 15px;
+      }
+    
+      .info-section h2 {
+        font-size: 1.8em;
+      }
+    
+      .info-section p {
+        font-size: 1em;
+      }
+  }
+
+  @media (max-width: 480px) {
+    .hero {
+      padding: 1rem 0.5rem;
+      height: 100vh;
+    }
+
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .overlay h1 {
+      font-size: 3rem;
+      margin-top: 40%;
+    }
+
+    .overlay article {
+      max-width: 90%;
+      margin-left: 10%;
+      margin-right: 5%;
+      margin-bottom: 40%;
+      text-align: start;
+    }
+
+    .overlay article > p {
+      font-size: 2rem;
+    }
+
+    .supplements > ul > li {
+      width: 100%;
+      padding: 0.75rem;
+    }
+
+    .supplements > ul > li > .text-content {
+      font-size: 0.85rem;
+    }
+    .info-section {
+        padding: 30px 10px;
+      }
+    
+      .info-section h2 {
+        font-size: 1.5em;
+      }
+    
+      .info-section p {
+        font-size: 0.9em;
+      }
   }
 }

@@ -12,7 +12,7 @@
   }
 
   body {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Lato', sans-serif;
   }
 
   .wrapper {
@@ -35,7 +35,7 @@
   }
 
   a, button {
-    background-color: rgb(171, 69, 230);
+    background-color: #7b4feb;
     text-decoration: none;
     color: white;
     border: none;
@@ -57,6 +57,7 @@
     position: relative;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     padding: 4rem 2rem;
     height: 100vh;
     display: flex;
@@ -186,7 +187,26 @@
   }
 
   /* Responsive styles */
-  @media screen and (max-width: 768px) {
+  @media (max-width: 768px) {
+    .hero {
+      padding: 2rem 1rem;
+      height: 100vh;
+    }
+
+    .overlay h1 {
+      font-size: 3rem;
+    }
+
+    .overlay article {
+      max-width: 80%;
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+
+    .overlay article > p {
+      font-size: 2rem;
+    }
+
     .breweries > ul > li {
       width: 90%;
       padding: 1rem;
@@ -197,13 +217,33 @@
     }
   }
 
-  @media screen and (max-width: 480px) {
+  @media (max-width: 480px) {
+    .hero {
+      padding: 1rem 0.5rem;
+      height: 100vh;
+    }
+
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
     .overlay h1 {
-      font-size: 2.5rem;
+      font-size: 3rem;
+      margin-top: 40%;
+    }
+
+    .overlay article {
+      max-width: 90%;
+      margin-left: 10%;
+      margin-right: 5%;
+      margin-bottom: 40%;
+      text-align: start;
     }
 
     .overlay article > p {
-      font-size: 1.2rem;
+      font-size: 2rem;
     }
 
     .breweries > ul > li {

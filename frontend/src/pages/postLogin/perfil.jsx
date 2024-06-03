@@ -34,7 +34,6 @@ const Perfil = () => {
         },
       });
       const data = response.data;
-      console.log('Fetched data:', data.r_comida); // Añadido para depuración
       setUserData(data);
       setInputs({
         ...data,
@@ -131,7 +130,7 @@ const Perfil = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="profile-container">
-        <h2 className="text-gray-900 text-3xl font-medium title-font mb-5">
+        <h2 className= "text-3xl font-medium title-font mb-5">
           Datos de {inputs.username || "Usuario"}
         </h2>
         {Object.entries(inputs).filter(([key]) => key !== 'r_comida').map(([key, value]) => (
@@ -166,15 +165,17 @@ const Perfil = () => {
           <div className="restricciones-items">
             {foodRestrictions.map(restriction => (
               <div key={restriction} className="restriccion-item">
-                <input
-                  type="checkbox"
-                  id={restriction}
-                  name="r_comida"
-                  value={restriction}
-                  checked={inputs.r_comida.includes(restriction)}
-                  onChange={handleChange}
-                  className="rounded border-purple-500 text-purple-600 shadow-sm"
-                />
+                <label className="container">
+                  <input
+                    type="checkbox"
+                    id={restriction}
+                    name="r_comida"
+                    value={restriction}
+                    checked={inputs.r_comida.includes(restriction)}
+                    onChange={handleChange}
+                  />
+                  <div className="checkmark"></div>
+                </label>
                 <label htmlFor={restriction}>{restriction.charAt(0).toUpperCase() + restriction.slice(1)}</label>
               </div>
             ))}
@@ -183,7 +184,7 @@ const Perfil = () => {
         <div className="button-group">
           <button
             onClick={handleSaveChanges}
-            className="mt-4 text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg"
+            className="mt-4 text-white border-0 py-2 px-8 focus:outline-none hover:bg-purple-400 rounded text-lg"
           >
             Guardar cambios
           </button>

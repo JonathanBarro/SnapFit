@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: "Century Gothic", 'Lato', sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #f0f2f5;
 }
 
@@ -58,6 +58,8 @@ body {
   letter-spacing: 0.3rem;
   opacity: 0.6;
   color: white;
+  text-align: center;
+  justify-content: center;
 }
 
 .full-screen-container {
@@ -66,25 +68,28 @@ body {
   justify-content: center;
   height: 100vh;
   background-color: #f0f2f5;
-  padding: 20px;
 }
 
 .info-section {
-  padding: 60px 20px;
+  padding: 10px 20px;
   background: #fff;
-  text-align: center;
   color: #333;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   margin: 20px;
-  max-width: 900px;
+  max-width: 1300px;
   width: 100%;
+  text-align: justify; /* Justificar el texto */
 }
 
 .info-section h2 {
   font-size: 2.5em;
   margin-bottom: 20px;
-  color: #c76dfc;
+  color: #7b4feb;
+  text-align: center;
+  margin-top: 4%;
+  margin-bottom: 4%;
+  font-family: 'Lato', sans-serif;
 }
 
 .info-section p {
@@ -94,25 +99,33 @@ body {
   color: #666;
 }
 
+.signup-button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+}
+
 .signup-button {
   position: relative;
   display: inline-block;  
   padding: 25px 30px;
-  margin: 40px 0;
-  color: #c76dfc;
+  margin: 40px auto; /* Centra el botón horizontalmente */
+  color: #7b4feb;
   text-decoration: none;
   text-transform: uppercase;
   transition: 0.5s;
   letter-spacing: 4px;
   overflow: hidden;
-  margin-right: 50px;
+  margin-left: 40%;
+  margin-right: 40%;
 
   &:hover {
-    background: #c76dfc;
+    background: #7b4feb;
     color: #ffffff;
-    box-shadow: 0 0 70px #c76dfc;
+    box-shadow: 0 0 50px #7b4feb;
 
-     -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+    -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
   }
 
   span {
@@ -196,6 +209,201 @@ body {
   }
 }
 
+.loader {
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  bottom: 35px;
+  right: 35px;
+  cursor: pointer;
+  z-index: 999; // Asegúrate de que el ícono esté sobre otros elementos
+  transition: opacity 0.5s ease;
+}
+
+.loader .spinner {
+  width: 100%;
+  height: 100%;
+  box-shadow: 0px 20px 40px #ff4646, 0px -20px 40px #8949ff, 20px 0px 40px #ff07fb, -20px 0px 40px #ff07fb;
+  border-radius: 50%;
+  animation: rotate 1s linear infinite;
+}
+
+.loader img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.loader.hide {
+  opacity: 0;
+  pointer-events: none; // Deshabilita los eventos de puntero cuando esté oculto
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.chat-container {
+  position: fixed;
+  bottom: 20px; // Asegura la misma altura que el ícono
+  right: 20px;
+  width: 350px;
+  max-width: 90%;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #ffffff;
+  z-index: 1000;
+  display: none; // Oculto por defecto
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.chat-container.open {
+  display: block; // Mostrar cuando esté abierto
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chat-history {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.chat-message {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  width: fit-content;
+  max-width: 80%;
+}
+
+.chat-message.user {
+  background-color: #daf8e3;
+  align-self: flex-end;
+}
+
+.chat-message.bot {
+  background-color: #f0f0f0;
+  align-self: flex-start;
+}
+
+.chat-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.circle1 {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 0 5px;
+  background-color: #333;
+  animation: circle1 1s ease-in-out infinite;
+}
+
+.circle1:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.circle1:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.circle1:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.circle1:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+@keyframes circle1 {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.chat-input {
+  display: flex;
+  padding-right: 40px; // Añade espacio para el botón de cierre
+  position: relative; // Asegura que el botón de cierre esté posicionado relativamente al contenedor
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+  margin: 0;
+}
+
+.chat-input button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  background-color: #7b4feb;
+  color: #fff;
+  cursor: pointer;
+  margin: 0;
+}
+
+.chat-input button:hover {
+  background-color: #5f3bb6;
+}
+
+.chat-input input:disabled,
+.chat-input button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.close-btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 40px; // Asegura un área de clic más grande
+  height: 100%; // Asegura que cubra toda la altura del input
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+.close-btn::before {
+  content: '⋮'; // Tres puntos en columna
+  font-size: 24px;
+  color: #aaa;
+}
+
 /* Media queries para pantallas medianas y pequeñas */
 @media (max-width: 1200px) {
   .text-overlay h1 {
@@ -239,10 +447,25 @@ body {
   .signup-button {
     padding: 20px 25px;
     font-size: 0.9rem;
+    margin-left: 30%;
+    margin-right: 30%;
+  }
+
+  .chat-container {
+    width: 90%;
+    bottom: 10px;
+    right: 5%;
+  }
+
+  .loader {
+    bottom: 10px;
+    right: 10px;
   }
 }
 
 @media (max-width: 480px) {
+
+  
   .text-overlay h1 {
     font-size: 1.5rem;
     letter-spacing: 0.5rem;
@@ -268,5 +491,19 @@ body {
   .signup-button {
     padding: 15px 20px;
     font-size: 0.8rem;
+    margin-left: 25%;
+    margin-right: 20%;
+  }
+
+  .chat-container {
+    width: 100%;
+    bottom: 0;
+    right: 0;
+    border-radius: 0; // Eliminar el borde redondeado en pantallas pequeñas para que ocupe todo el ancho
+  }
+
+  .loader {
+    bottom: 20px;
+    right: 20px;
   }
 }

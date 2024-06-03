@@ -63,7 +63,7 @@ router.get('/debug', (req, res) => {
 router.post('/chat', async (req, res) => {
   const userInput = req.body.prompt;
   try {
-    const response = await callOpenAI(userInput, 150);
+    const response = await callOpenAI(userInput, 500);
     res.json({ response });
   } catch (error) {
     res.status(500).json({ error: error.message });

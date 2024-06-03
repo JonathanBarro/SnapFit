@@ -1,6 +1,7 @@
+import React from 'react';
+import VideoCardList from '../../components/videoCards/videoList';
 import './exercise.scss';
 import heroImage from '../../assets/img/ejs.webp';
-import VideoCardList from '../../components/videoCards/videoList';
 
 const Exercise = () => {
   return (
@@ -10,17 +11,17 @@ const Exercise = () => {
           <div className="overlay">
             <h1>Ejercicio</h1>
             <article>
-              <p>En este apartado tienes ejemplos de como se realizan diferentes ejercicios.</p>
+              <p>En este apartado encontrarás diferentes videos para poder aprender a realizar correctamente diferentes ejercicios.</p>
             </article>
           </div>
         </section>
       </main>
       <div className="exercise-page">
-            <h1 className="text-3xl font-bold text-center my-4">Exercise Videos</h1>
-            <VideoCardList />
-        </div>
+        <h1 className="text-6xl text-center my-4 mt-20 mb-10">Videos de ejercicios</h1>
+        <VideoCardList />
+      </div>
     </div>
   );
 };
-  
-  export default Exercise;
+
+export default Exercise;

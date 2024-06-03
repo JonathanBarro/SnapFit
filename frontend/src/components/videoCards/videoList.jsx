@@ -165,9 +165,9 @@ const VideoCardList = () => {
     return (
         <div className="flex flex-col items-center">
             {Object.entries(videoData).map(([group, videos]) => (
-                <div key={group} className="my-4 w-full">
-                    <h2 className="text-2xl font-semibold mb-4 text-center capitalize">{group}</h2>
-                    <div className="flex flex-wrap justify-center">
+                <div key={group} className="info-video">
+                    <h2 className="text-5xl mb-4 text-center capitalize">{group}</h2>
+                    <div className="flex-wrap">
                         {videos.map((video, index) => (
                             <VideoCardItem
                                 key={index}

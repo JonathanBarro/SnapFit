@@ -150,7 +150,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="signup-wrapper bg-gradient-to-r from-fuchsia-300 to-violet-300">
+    <div className="signup-wrapper bg-gradient-to-r from-slate-400 to-slate-100">
       <div className="signup-container">
         <form id="msform" onSubmit={handleSubmit}>
           <ul id="progressbar">
@@ -185,7 +185,10 @@ const SignUp = () => {
                 <div className="restricciones-items">
                   {Object.keys(restricciones).map((key) => (
                     <div key={key} className="restriccion-item">
-                      <input type="checkbox" id={key} name="restricciones" value={key} checked={restricciones[key]} onChange={handleChange} />
+                      <label className="container">
+                        <input type="checkbox" id={key} name="restricciones" value={key} checked={restricciones[key]} onChange={handleChange} />
+                        <div className="checkmark"></div>
+                      </label>
                       <label htmlFor={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
                     </div>
                   ))}

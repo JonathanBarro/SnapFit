@@ -36,6 +36,13 @@ const Home = () => {
           )}
         </div>
       </div>
+      <div className="full-screen-container">
+        <div className="info-section">
+          <h2>ChatBot</h2>
+          <p>Además, en SnapFit contamos con un chatbot inteligente que actúa como tu asistente personal en fitness y nutrición. Puedes utilizar el chatbot para resolver cualquier duda que tengas sobre dietas, ejercicios y hábitos saludables. ¿No sabes qué alimento puede sustituir a otro en tu dieta? ¿Te preguntas por qué es importante comer cierto tipo de alimentos? ¿Tienes dudas sobre cómo ejecutar un ejercicio correctamente? Nuestro chatbot está disponible para ayudarte en cualquier momento, proporcionándote respuestas rápidas y precisas a todas tus preguntas. Es como tener a un entrenador y nutricionista personal a tu disposición 24/7.El ChatBot se encuentra en la esquina inferior derecha de tu pantalla, si haces click en el icono se desplegará un chat y si ya has resuelto tus dudas y quieres vovler a cerrarlo solo tendras que hacer click en los tres puntitos que salen a la derecha del botón enviar.</p>
+          <p>El ChatBot se encuentra en la esquina inferior derecha de tu pantalla, si haces click en el icono, la cabeza con colores alrededor girando, se desplegará un chat y si ya has resuelto tus dudas y quieres cerrarlo solo tendrás que hacer click en los tres puntitos que salen a la derecha del botón enviar.</p>
+          </div>
+        </div>
     </div>
   );
 };

@@ -89,7 +89,7 @@ router.post('/login', async (req, res) => {
 
 async function generateDiet(userData) {
     const prompt = `
-    Crear una dieta semanal indicando cantidad de cada ingrediente para un usuario con las siguientes características:
+    Crear una dieta semanal, indicando cantidad de cada ingrediente y sin repetir alimentos, para un usuario con las siguientes características:
     - Nombre de usuario: ${userData.username}
     - Edad: ${userData.edad}
     - Peso: ${userData.peso} kg

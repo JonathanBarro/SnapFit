@@ -62,8 +62,8 @@ const Salud = () => {
               label: 'Progresión del peso',
               data,
               fill: false,
-              backgroundColor: '#b699e4',
-              borderColor: '#b699e4',
+              backgroundColor: '#7b4feb',
+              borderColor: '#7b4feb',
             },
           ],
         });
@@ -83,7 +83,7 @@ const Salud = () => {
     <div className="flex justify-center items-center min-h-screen">
       <div className="w-full max-w-4xl">
         <div className="chart-container">
-          <h2 className="text-center text-2xl font-semibold text-purple-400 mb-4">Progresión</h2>
+          <h2 className="text-center text-2xl font-semibold mb-4">Progresión</h2>
           <div className="chart-wrapper">
             <Line data={chartData} options={{ maintainAspectRatio: false }} />
           </div>

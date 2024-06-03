@@ -51,7 +51,7 @@ const CambioPass = () => {
   };
 
   return (
-    <div className="login-wrapper bg-gradient-to-r from-fuchsia-300 to-violet-300">
+    <div className="login-wrapper bg-gradient-to-r from-slate-400 to-slate-100">
       <div className="login-container">
         <form id="msform" onSubmit={handleSubmit}>
           <fieldset>

@@ -29,13 +29,13 @@ function NavBar() {
   };
 
   return (
-    <nav className="navbar bg-gradient-to-r from-violet-500 to-fuchsia-500">
+    <nav className="navbar bg-gradient-to-r from-black to-slate-700">
       <div className="nav-container">
         <a className="nav-logo">
           <span className="icon">
             <Logo />
           </span>
-          <span className="ml-3xl text-4xl font-semibold text-white">
+          <span className="ml-3xl text-4xl font-normal text-white">
             SnapFit
           </span>
         </a>

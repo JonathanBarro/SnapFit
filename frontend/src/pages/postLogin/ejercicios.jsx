@@ -33,9 +33,11 @@ const Ejercicios = () => {
   }
 
   return (
+    <div className="full-screen-container">
     <div className="ejercicio-container">
-      <h1 className="header-style" style={{color: "#b699e4"}}>Rutina Semanal de Ejercicios</h1>
+      <h1 className="header-style" style={{color: "#7b4feb"}}>Rutina Semanal de Ejercicios</h1>
       <ExerciseTable routine={routine} />
+    </div>
     </div>
   );
 }
