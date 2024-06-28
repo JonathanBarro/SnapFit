@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import './suplements.scss';
 import heroImage from '../../assets/img/suple.jpg';
-import protes from '../../assets/img/protes.jpeg';
+import protes from '../../assets/img/Protes.jpg';
+import creatina from '../../assets/img/Creatina.jpg';
+import multi from '../../assets/img/multi.jpg';
+import bcaa from '../../assets/img/bca.webp';
 
 const Suplements = () => {
   const [expandedSection, setExpandedSection] = useState(null);
@@ -32,7 +35,7 @@ const Suplements = () => {
       ),
     },
     {
-      image: protes,
+      image: creatina,
       title: 'Creatina',
       text: (
         <>
@@ -56,7 +59,7 @@ const Suplements = () => {
       ),
     },
     {
-      image: protes,
+      image: bcaa,
       title: 'BCAA',
       text: (
         <>
@@ -80,7 +83,7 @@ const Suplements = () => {
       ),
     },
     {
-      image: protes,
+      image: multi,
       title: 'Vitaminas y Minerales',
       text: (
         <>

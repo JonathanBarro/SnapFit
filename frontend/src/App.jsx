@@ -1,8 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { UserProvider } from './context/UserContext';
 import Home from "./pages/nav/home";
-import AboutUs from "./pages/nav/oboutUs";
-import Tips from "./pages/nav/tips";
 import Exercise from "./pages/nav/exercises";
 import LogIn from "./pages/login/login";
 import LearNutrititon from "./pages/nav/aprendeNutricion";

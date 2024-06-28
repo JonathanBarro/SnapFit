@@ -11,7 +11,7 @@ const Exercise = () => {
           <div className="overlay">
             <h1>Ejercicio</h1>
             <article>
-              <p>En este apartado encontrarás diferentes videos para poder aprender a realizar correctamente diferentes ejercicios.</p>
+              <p>En este apartado encontrarás videos divididos en secciones para poder aprender a realizar correctamente diferentes ejercicios.</p>
             </article>
           </div>
         </section>

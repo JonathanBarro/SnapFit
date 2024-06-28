@@ -43,14 +43,11 @@ const TablaDieta = () => {
           {dieta.map(dayInfo => (
             <tr key={dayInfo.dia}>
               <td>{dayInfo.dia.charAt(0).toUpperCase() + dayInfo.dia.slice(1)}</td>
-              {["desayuno", "almuerzo", "cena"].map(mealType => {
-                const meal = dayInfo.comidas.find(m => m.tipoComida === mealType);
-                return (
-                  <td key={mealType}>
-                    {meal ? `${meal.items.join(", ")}` : "No meal"}
-                  </td>
-                );
-              })}
+              {dayInfo.comidas.map(comida => (
+                <td key={comida.tipoComida}>
+                  {comida.items.join(", ")}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>

@@ -38,7 +38,7 @@ const ChatBot = () => {
   return (
     <>
       <div className={`loader ${isChatOpen ? 'hide' : 'show'}`} onClick={toggleChat}>
-        <div className="spinner"></div>
+        <div className="spinnerr"></div>
         <img src={iaImage} alt="IA" />
       </div>
       <div className={`chat-container ${isChatOpen ? 'open' : ''}`}>

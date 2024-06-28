@@ -126,6 +126,8 @@ html, body {
 
 /*progressbar*/
 #progressbar {
+  display: flex; /* Asegura que los elementos hijos se coloquen en una fila */
+  justify-content: space-between; /* Espacia uniformemente los elementos */
   margin-bottom: 30px;
   overflow: hidden;
   /*CSS counters to number the steps*/
@@ -137,8 +139,8 @@ html, body {
   color: white;
   text-transform: uppercase;
   font-size: 9px;
-  width: 33.33%;
-  float: left;
+  flex: 1; /* Asegura que los elementos se distribuyan equitativamente */
+  text-align: center; /* Centra el contenido de cada elemento */
   position: relative;
   letter-spacing: 1px;
 }
@@ -166,16 +168,15 @@ html, body {
   position: absolute;
   left: -50%;
   top: 9px;
-  z-index: -1; /*put it behind the numbers*/
+  z-index: -1; /* Put it behind the numbers */
 }
 
 #progressbar li:first-child:after {
-  /*connector not needed before the first step*/
-  content: none;
+  content: none; /* Connector not needed before the first step */
 }
 
-/*marking active/completed steps green*/
-/*The number of the step and the connector before it = green*/
+/* Marking active/completed steps green */
+/* The number of the step and the connector before it = green */
 #progressbar li.active:before, #progressbar li.active:after {
   background: #7b4feb;
   color: white;

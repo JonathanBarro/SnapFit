@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
-const weightTrackingSchema = new mongoose.Schema({
+const imcTrackingSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
         unique: true  
     },
-    weights: [{
+    imc: [{
         type: Number,
         required: true
     }],
@@ -17,6 +17,4 @@ const weightTrackingSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
-const WeightTracking = mongoose.model('WeightTracking', weightTrackingSchema);
-
-module.exports = WeightTracking;
+module.exports = mongoose.model("IMCTracking", imcTrackingSchema);

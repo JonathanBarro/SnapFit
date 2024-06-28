@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import Joi from "@hapi/joi";
 import { useNavigate } from "react-router-dom";
 import './signup.scss';
+import Loader from '../../components/loader/loader';  // Asegúrate de tener este componente
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -23,6 +24,15 @@ const SignUp = () => {
   const [genero, setGenero] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [medidasCorporales, setMedidasCorporales] = useState({
+    brazo: "",
+    pecho: "",
+    cintura: "",
+    muslo: ""
+  });
+  const [limitacionesNutricion, setLimitacionesNutricion] = useState("");
+  const [limitacionesDeporte, setLimitacionesDeporte] = useState("");
+  
   const navigate = useNavigate();
 
   const schema = Joi.object({
@@ -37,6 +47,14 @@ const SignUp = () => {
     r_comida: Joi.array().items(Joi.string()).required(),
     objetivo: Joi.string().valid("Perder peso", "Ganar masa muscular", "Mejorar salud cardiovascular", "Estilo de vida saludable").required(),
     genero: Joi.string().valid("Masculino", "Femenino").required(),
+    medidasCorporales: Joi.object({
+      brazo: Joi.number().min(0).required(),
+      pecho: Joi.number().min(0).required(),
+      cintura: Joi.number().min(0).required(),
+      muslo: Joi.number().min(0).required()
+    }).required(),
+    limitacionesNutricion: Joi.string().optional(),
+    limitacionesDeporte: Joi.string().optional()
   });
 
   const handleChange = (event) => {
@@ -46,6 +64,11 @@ const SignUp = () => {
       setRestricciones((prev) => ({
         ...prev,
         [value]: checked,
+      }));
+    } else if (name in medidasCorporales) {
+      setMedidasCorporales((prev) => ({
+        ...prev,
+        [name]: value
       }));
     } else {
       const setters = {
@@ -59,6 +82,8 @@ const SignUp = () => {
         t_disponible: setT_disponible,
         genero: setGenero,
         objetivo: setObjetivo,
+        limitacionesNutricion: setLimitacionesNutricion,
+        limitacionesDeporte: setLimitacionesDeporte
       };
       setters[name](value);
     }
@@ -80,6 +105,14 @@ const SignUp = () => {
       celiaco: false,
       vegetariano: false,
     });
+    setMedidasCorporales({
+      brazo: "",
+      pecho: "",
+      cintura: "",
+      muslo: ""
+    });
+    setLimitacionesNutricion("");
+    setLimitacionesDeporte("");
     setStep(1);
   };
 
@@ -102,6 +135,9 @@ const SignUp = () => {
       r_comida: restriccionesSeleccionadas,
       objetivo,
       genero,
+      medidasCorporales,
+      limitacionesNutricion,
+      limitacionesDeporte
     };
 
     const { error } = schema.validate(user);
@@ -152,11 +188,13 @@ const SignUp = () => {
   return (
     <div className="signup-wrapper bg-gradient-to-r from-slate-400 to-slate-100">
       <div className="signup-container">
+        {isLoading && <Loader />}
         <form id="msform" onSubmit={handleSubmit}>
           <ul id="progressbar">
             <li className={step === 1 ? "active" : ""}>Detalles Personales</li>
             <li className={step === 2 ? "active" : ""}>Detalles de Salud</li>
             <li className={step === 3 ? "active" : ""}>Configuración de Cuenta</li>
+            <li className={step === 4 ? "active" : ""}>Medidas y Limitaciones</li>
           </ul>
           {step === 1 && (
             <fieldset>
@@ -211,6 +249,28 @@ const SignUp = () => {
                 <option value="Mejorar salud cardiovascular">Mejorar salud cardiovascular</option>
                 <option value="Estilo de vida saludable">Estilo de vida saludable</option>
               </select>
+              <input type="button" name="previous" className="previous action-button-previous" value="Anterior" onClick={previousStep} />
+              <input type="button" name="next" className="next action-button" value="Siguiente" onClick={nextStep} />
+            </fieldset>
+          )}
+          {step === 4 && (
+            <fieldset>
+              <h2 className="fs-title">Medidas y Limitaciones</h2>
+              <div className="medidas-corporales">
+                <label className="fs-subtitle">Medidas Corporales (en cm):</label>
+                <input type="text" name="brazo" placeholder="Brazo" value={medidasCorporales.brazo} onChange={handleChange} />
+                <input type="text" name="pecho" placeholder="Pecho" value={medidasCorporales.pecho} onChange={handleChange} />
+                <input type="text" name="cintura" placeholder="Cintura" value={medidasCorporales.cintura} onChange={handleChange} />
+                <input type="text" name="muslo" placeholder="Muslo" value={medidasCorporales.muslo} onChange={handleChange} />
+              </div>
+              <div className="limitaciones-nutricion">
+                <label className="fs-subtitle">Limitaciones Nutricionales:</label>
+                <textarea name="limitacionesNutricion" placeholder="Alergias o comidas que no te gusten" value={limitacionesNutricion} onChange={handleChange}></textarea>
+              </div>
+              <div className="limitaciones-deporte">
+                <label className="fs-subtitle">Limitaciones Deportivas:</label>
+                <textarea name="limitacionesDeporte" placeholder="Lesiones o limitaciones físicas" value={limitacionesDeporte} onChange={handleChange}></textarea>
+              </div>
               <input type="button" name="previous" className="previous action-button-previous" value="Anterior" onClick={previousStep} />
               <input type="submit" name="submit" className="submit action-button" value="Finalizar" />
             </fieldset>

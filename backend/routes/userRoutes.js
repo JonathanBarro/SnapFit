@@ -10,6 +10,10 @@ const { calculadora } = require('../utils/calculadora');
 const axios = require('axios');
 const Dieta = require('../models/dieta');
 const Ejercicio = require("../models/exercise");
+const IMCTracking = require('../models/IMCTracking');
+const MedidasTracking = require('../models/medidasTracking');
+
+const SALT_ROUNDS = 12;
 
 async function callOpenAI(userInput) {
     try {
@@ -89,7 +93,7 @@ router.post('/login', async (req, res) => {
 
 async function generateDiet(userData) {
     const prompt = `
-    Crear una dieta semanal, indicando cantidad de cada ingrediente y sin repetir alimentos, para un usuario con las siguientes características:
+    Crear una dieta semanal(todos los días de la semana en minuscula), indicando cantidad de cada ingrediente y sin repetir alimentos, para un usuario con las siguientes características:
     - Nombre de usuario: ${userData.username}
     - Edad: ${userData.edad}
     - Peso: ${userData.peso} kg
@@ -103,7 +107,7 @@ async function generateDiet(userData) {
     - Proteínas diarias: ${userData.proteinas} g
     - Carbohidratos diarios: ${userData.carbs} g
     - Grasas diarias: ${userData.grasas} g
-  
+     Ten en cuenta estas limitaciones: ${userData.limitacionesNutricion}
     Devuelve solo la respuesta en el siguiente formato JSON sin ninguna explicación ni palabra adicional:
     {
       "dieta": {
@@ -137,7 +141,7 @@ async function generateDiet(userData) {
   
   async function generateExercise(userData) {
     const prompt = `
-    Crear un plan de ejercicios semanal para un usuario con las siguientes características:
+    Crear un plan de ejercicios semanal(todos los días de la semana en minuscula) con mínimo 6 ejercicios diferentes por día para un usuario con las siguientes características. Pueden ser entrenamientos tipo push pull leg que se repitan durante la semana. Ten en cuenta estas limitaciones: ${userData.limitacionesDeporte} para recomendar ejercicios adaptados (si le falta una pierna pon por ejemplo algún tipo de sentadilla a una pierna o si le duele algo bajar el peso a x%):
     - Nombre de usuario: ${userData.username}
     - Edad: ${userData.edad}
     - Peso: ${userData.peso} kg
@@ -151,7 +155,7 @@ async function generateDiet(userData) {
     - Proteínas diarias: ${userData.proteinas} g
     - Carbohidratos diarios: ${userData.carbs} g
     - Grasas diarias: ${userData.grasas} g
-  
+
     Devuelve solo la respuesta en el siguiente formato JSON sin ninguna explicación ni palabra adicional:
     {
       "ejercicios": {
@@ -183,85 +187,124 @@ async function generateDiet(userData) {
   }
   
   router.post('/signup', async (req, res) => {
-    const { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, objetivo, r_comida, genero } = req.body;
-  
+    const { username, email, password, edad, peso, altura, frec_actividad_sem, t_disponible, objetivo, r_comida, genero, medidasCorporales, limitacionesNutricion, limitacionesDeporte } = req.body;
+
     try {
-      // Calcular calorías y macronutrientes
-      const { kcals, proteinas, grasas, carbohidratos } = calculadora(altura, peso, edad, objetivo, genero, frec_actividad_sem);
-  
-      // Encriptar la contraseña
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      // Crear el nuevo usuario
-      const newUser = new User({
-        username,
-        email,
-        password: hashedPassword,
-        edad,
-        peso,
-        altura,
-        frec_actividad_sem,
-        t_disponible,
-        objetivo,
-        r_comida,
-        genero,
-        kcals,
-        proteinas,
-        carbs: carbohidratos,
-        grasas
-      });
-  
-      const savedUser = await newUser.save();
-  
-      // Generar dieta y tabla de ejercicios
-      const [dieta, ejercicios] = await Promise.all([
-        generateDiet({
-          username,
-          edad,
-          peso,
-          altura,
-          frec_actividad_sem,
-          t_disponible,
-          objetivo,
-          r_comida,
-          genero,
-          kcals,
-          proteinas,
-          carbs: carbohidratos,
-          grasas
-        }),
-        generateExercise({
-          username,
-          edad,
-          peso,
-          altura,
-          frec_actividad_sem,
-          t_disponible,
-          objetivo,
-          r_comida,
-          genero,
-          kcals,
-          proteinas,
-          carbs: carbohidratos,
-          grasas
-        })
-      ]);
-  
-      // Guardar la dieta y la tabla de ejercicios
-      const newDieta = new Dieta({ userId: savedUser._id, data: dieta });
-      const newEjercicio = new Ejercicio({ userId: savedUser._id, data: ejercicios });
-  
-      await newDieta.save();
-      await newEjercicio.save();
-  
-      // Responder al cliente
-      res.status(201).json({ message: 'Usuario registrado y datos generados con éxito', user: savedUser });
-  
+        // Calcular calorías y macronutrientes
+        const { kcals, proteinas, grasas, carbohidratos } = calculadora(altura, peso, edad, objetivo, genero, frec_actividad_sem);
+
+        // Encriptar la contraseña
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+        // Crear el nuevo usuario
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword,
+            edad,
+            peso,
+            altura,
+            frec_actividad_sem,
+            t_disponible,
+            objetivo,
+            r_comida,
+            genero,
+            medidasCorporales,
+            limitacionesNutricion,
+            limitacionesDeporte,
+            kcals,
+            proteinas,
+            carbs: carbohidratos,
+            grasas
+        });
+
+        const savedUser = await newUser.save();
+
+        // Generar dieta y tabla de ejercicios
+        const [dieta, ejercicios] = await Promise.all([
+            generateDiet({
+                username,
+                edad,
+                peso,
+                altura,
+                frec_actividad_sem,
+                t_disponible,
+                objetivo,
+                r_comida,
+                genero,
+                kcals,
+                proteinas,
+                carbs: carbohidratos,
+                grasas,
+                limitacionesNutricion
+            }),
+            generateExercise({
+                username,
+                edad,
+                peso,
+                altura,
+                frec_actividad_sem,
+                t_disponible,
+                objetivo,
+                r_comida,
+                genero,
+                kcals,
+                proteinas,
+                carbs: carbohidratos,
+                grasas,
+                limitacionesDeporte
+            })
+        ]);
+
+        // Guardar la dieta y la tabla de ejercicios
+        const newDieta = new Dieta({ userId: savedUser._id, data: dieta });
+        const newEjercicio = new Ejercicio({ userId: savedUser._id, data: ejercicios });
+
+        await newDieta.save();
+        await newEjercicio.save();
+
+        // Calcular y guardar el IMC
+        const imc = peso / ((altura / 100) ** 2);
+        const newIMCTracking = new IMCTracking({
+            userId: savedUser._id,
+            imc: [imc],
+            dates: [new Date()]
+        });
+
+        await newIMCTracking.save();
+
+        // Guardar las medidas corporales
+        const newMedidasTracking = new MedidasTracking({
+            userId: savedUser._id,
+            medidas: [{
+                brazo: medidasCorporales.brazo,
+                pecho: medidasCorporales.pecho,
+                cintura: medidasCorporales.cintura,
+                muslo: medidasCorporales.muslo,
+                date: new Date()
+            }]
+        });
+
+        await newMedidasTracking.save();
+
+        // Guardar el peso inicial
+        const newWeightTracking = new WeightTracking({
+            userId: savedUser._id,
+            weights: [peso],
+            dates: [new Date()]
+        });
+
+        await newWeightTracking.save();
+
+        // Responder al cliente
+        res.status(201).json({ message: 'Usuario registrado y datos generados con éxito', user: savedUser });
+
     } catch (error) {
-      console.error('Error en el registro:', error);
-      res.status(500).json({ error: 'Error en el registro del usuario' });
+        console.error('Error en el registro:', error);
+        res.status(500).json({ error: 'Error en el registro del usuario' });
     }
-  });
+});
+
 
 // Ruta para obtener los detalles del usuario autenticado
 router.get('/profile', authenticateToken, async (req, res) => {
@@ -279,72 +322,96 @@ router.get('/profile', authenticateToken, async (req, res) => {
 
 
 router.post('/update', authenticateToken, async (req, res) => {
-    const userId = req.user.userId;
-    const { peso, t_disponible, objetivo, planEjercicioId, altura, edad, genero, frec_actividad_sem } = req.body;
+  const userId = req.user.userId;
+  const { peso, altura, t_disponible, objetivo, planEjercicioId, edad, genero, frec_actividad_sem, brazo, pecho, cintura, muslo } = req.body;
 
+  try {
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
 
-    try {
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
+      // Determinar si se necesita una nueva rutina
+      const needsNewRoutine = t_disponible !== user.t_disponible || objetivo !== user.objetivo;
 
-        // Determinar si se necesita una nueva rutina
-        const needsNewRoutine = t_disponible !== user.t_disponible || objetivo !== user.objetivo;
+      const resultadosNutricionales = calculadora(altura, peso, edad, objetivo, genero, frec_actividad_sem);
 
-        const resultadosNutricionales = calculadora(altura, peso, edad, objetivo, genero, frec_actividad_sem);
+      // Calcular IMC
+      const imc = peso / ((altura / 100) ** 2);
 
-        // Actualizar datos del usuario
-        const updateData = {
-            // otros datos
-            kcals: resultadosNutricionales.kcals,
-            proteinas: resultadosNutricionales.proteinas,
-            carbs: resultadosNutricionales.carbohidratos,
-            grasas: resultadosNutricionales.grasas,
-        };
-    
-        // Actualizar usuario con nuevos valores
-    
-        Object.keys(req.body).forEach(key => {
-            if (req.body[key] !== '' && key !== 'userId') {
-                updateData[key] = req.body[key];
-            }
-        });
+      // Actualizar datos del usuario
+      const updateData = {
+          kcals: resultadosNutricionales.kcals,
+          proteinas: resultadosNutricionales.proteinas,
+          carbs: resultadosNutricionales.carbohidratos,
+          grasas: resultadosNutricionales.grasas,
+      };
 
+      // Actualizar usuario con nuevos valores
+      Object.keys(req.body).forEach(key => {
+          if (req.body[key] !== '' && key !== 'userId') {
+              updateData[key] = req.body[key];
+          }
+      });
 
-        
-        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
 
-        // Actualizar peso si se proporciona
-        if (peso) {
-            await WeightTracking.findOneAndUpdate(
-                { userId: userId },
-                {
-                    $push: {
-                        weights: peso,
-                        dates: new Date()
-                    }
-                },
-                { new: true }
-            );
-        }
+      // Actualizar peso si se proporciona
+      if (peso) {
+          await WeightTracking.findOneAndUpdate(
+              { userId: userId },
+              {
+                  $push: {
+                      weights: peso,
+                      dates: new Date()
+                  }
+              },
+              { new: true, upsert: true, setDefaultsOnInsert: true }
+          );
+      }
 
-        // Asignar nueva rutina si es necesario
-        if (needsNewRoutine) {
-            // Asignar la nueva rutina
-            await asignarRutinaAUsuario(userId, updatedUser.objetivo, updatedUser.t_disponible);
-            // No es necesario actualizar el usuario aquí, ya que `asignarRutinaAUsuario` se encarga de esto
-        }
+      // Actualizar medidas corporales si se proporcionan
+      if (brazo || pecho || cintura || muslo) {
+          await MedidasTracking.findOneAndUpdate(
+              { userId: userId },
+              {
+                  $push: {
+                      medidas: {
+                          brazo: brazo || user.medidasCorporales.brazo,
+                          pecho: pecho || user.medidasCorporales.pecho,
+                          cintura: cintura || user.medidasCorporales.cintura,
+                          muslo: muslo || user.medidasCorporales.muslo,
+                          date: new Date()
+                      }
+                  }
+              },
+              { new: true, upsert: true, setDefaultsOnInsert: true }
+          );
+      }
 
-        res.json({ message: "User updated", user: updatedUser });
-    } catch (error) {
-        console.error("Error updating user:", error);
-        res.status(500).json({ message: "Error updating user", error });
-    }
+      // Actualizar IMC
+      await IMCTracking.findOneAndUpdate(
+          { userId: userId },
+          {
+              $push: {
+                  imc: imc,
+                  dates: new Date()
+              }
+          },
+          { new: true, upsert: true, setDefaultsOnInsert: true }
+      );
+
+      // Asignar nueva rutina si es necesario
+      if (needsNewRoutine) {
+          await asignarRutinaAUsuario(userId, updatedUser.objetivo, updatedUser.t_disponible);
+      }
+
+      res.json({ message: "User updated", user: updatedUser });
+  } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Error updating user", error });
+  }
 });
-
-
-
 
 router.post('/changePassword', authenticateToken, async (req, res) => {
     try {
@@ -360,7 +427,7 @@ router.post('/changePassword', authenticateToken, async (req, res) => {
             return res.status(401).json({ message: "Contraseña actual incorrecta" });
         }
 
-        user.password = await bcrypt.hash(newPassword, 12);
+        user.password = await bcrypt.hash(newPassword, SALT_ROUNDS);
         await user.save();
         res.status(200).json({ message: "Contraseña actualizada correctamente" });
     } catch (error) {

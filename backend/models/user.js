@@ -8,15 +8,23 @@ const userSchema = new mongoose.Schema(
     edad: { type: Number },
     peso: { type: Number },
     altura: { type: Number },
-    frec_actividad_sem: { type: Number }, // Frecuencia de actividad semanal
-    t_disponible: { type: Number }, // Tiempo disponible
-    objetivo:{ type: String },
-    r_comida: [{ type: String }], // Restricciones alimentarias (puede ser un array de strings)
-    genero:{ type: String },
+    frec_actividad_sem: { type: Number },
+    t_disponible: { type: Number },
+    objetivo: { type: String },
+    r_comida: [{ type: String }],
+    genero: { type: String },
     kcals: { type: Number },
     proteinas: { type: Number },
     carbs: { type: Number },
     grasas: { type: Number },
+    medidasCorporales: {
+      brazo: { type: Number },
+      pecho: { type: Number },
+      cintura: { type: Number },
+      muslo: { type: Number }
+    },
+    limitacionesNutricion: { type: String },
+    limitacionesDeporte: { type: String },
     planNutricionalId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Dieta",

@@ -28,8 +28,9 @@ router.post('/updateWeight', authenticateToken, async (req, res) => {
 });
 
 router.get('/getWeights', authenticateToken, async (req, res) => {
+    const userId = req.user.userId;
+
     try {
-        const userId = req.user.userId;  // Asumiendo que el userId está en el token JWT
         const weightTracking = await WeightTracking.findOne({ userId });
 
         if (!weightTracking) {

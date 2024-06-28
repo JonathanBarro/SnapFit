@@ -16,6 +16,12 @@ const Perfil = () => {
     r_comida: [],
     objetivo: "",
     genero: "",
+    brazo: "",
+    pecho: "",
+    cintura: "",
+    muslo: "",
+    limitacionesNutricion: "",
+    limitacionesDeporte: ""
   });
 
   const [userData, setUserData] = useState({});
@@ -37,6 +43,7 @@ const Perfil = () => {
       setUserData(data);
       setInputs({
         ...data,
+        ...data.medidasCorporales, // Desestructurar las medidas corporales
         r_comida: data.r_comida || [],
       });
     } catch (error) {
@@ -51,7 +58,15 @@ const Perfil = () => {
   const handleSaveChanges = async () => {
     const token = localStorage.getItem("token");
     try {
-      const updatedData = { ...inputs };
+      const updatedData = {
+        ...inputs,
+        medidasCorporales: {
+          brazo: inputs.brazo,
+          pecho: inputs.pecho,
+          cintura: inputs.cintura,
+          muslo: inputs.muslo,
+        }
+      };
       await axios.post(
         "http://localhost:3030/users/update",
         updatedData,
@@ -124,16 +139,22 @@ const Perfil = () => {
     frec_actividad_sem: "Frecuencia de actividad semanal",
     t_disponible: "Tiempo disponible para hacer ejercicio",
     objetivo: "Objetivo",
-    genero: "Género"
+    genero: "Género",
+    brazo: "Medida del brazo (cm)",
+    pecho: "Medida del pecho (cm)",
+    cintura: "Medida de la cintura (cm)",
+    muslo: "Medida del muslo (cm)",
+    limitacionesNutricion: "Limitaciones Nutricionales",
+    limitacionesDeporte: "Limitaciones Deportivas"
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="profile-container">
-        <h2 className= "text-3xl font-medium title-font mb-5">
+        <h2 className="text-3xl font-medium title-font mb-5">
           Datos de {inputs.username || "Usuario"}
         </h2>
-        {Object.entries(inputs).filter(([key]) => key !== 'r_comida').map(([key, value]) => (
+        {Object.entries(inputs).filter(([key]) => !['r_comida', 'medidasCorporales'].includes(key)).map(([key, value]) => (
           <div key={key} className="mb-4 w-full">
             <label className="block text-sm font-medium text-gray-700">{labels[key]}</label>
             {key === 'objetivo' || key === 'genero' ? (
@@ -160,6 +181,7 @@ const Perfil = () => {
             )}
           </div>
         ))}
+
         <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700">Restricciones Alimentarias</label>
           <div className="restricciones-items">

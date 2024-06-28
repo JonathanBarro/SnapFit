@@ -12,6 +12,8 @@ const authenticateToken = require('./middleware/authenticateToken.js')
 const authRoutes = require('./routes/authRoutes.js')
 const nutricionRoute = require('./routes/nutricionRoutes.js')
 const dietaRoutes = require('./routes/dietaRoutes.js')
+const imcRoutes = require('./routes/imcRoutes.js');
+const medidasRoutes = require('./routes/medidasRoutes.js');
 require('dotenv').config();
 
 
@@ -37,6 +39,8 @@ app.use("/exercises", authenticateToken, exerciseRoutes);
 app.use("/nutricion", authenticateToken, nutricionRoute);
 app.use("/diet", authenticateToken, dietaRoutes);
 app.use("/openai", openAIRoutes);
+app.use("/imc", authenticateToken, imcRoutes);
+app.use("/medidas", authenticateToken, medidasRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hola Mundo!");

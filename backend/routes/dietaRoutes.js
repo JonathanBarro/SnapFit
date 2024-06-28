@@ -15,39 +15,44 @@ router.post('/', async (req, res) => {
     }
   });
   
-  router.get('/daily-diet-details', authenticateToken, async (req, res) => {
-    try {
-      const userId = req.user.userId;
-      const latestDiet = await Dieta.findOne({ userId }).sort({ createdAt: -1 });
-  
-      if (!latestDiet) {
-        return res.status(404).json({ message: "No se encontró dieta para este usuario" });
-      }
-  
-      const days = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
-      const mealTypes = ['desayuno', 'almuerzo', 'cena'];
-  
-      let weeklyDietDetails = await Promise.all(days.map(async day => {
-        let dayDetails = { dia: day, comidas: [] };
-        await Promise.all(mealTypes.map(async mealType => {
-          const meal = latestDiet.data.dieta.days.find(d => d.day === day)?.meals.find(m => m.meal === mealType);
-          if (meal) {
-            // Aquí puedes agregar lógica para obtener detalles adicionales si es necesario
-            dayDetails.comidas.push({
-              tipoComida: mealType,
-              items: meal.items
-            });
-          }
-        }));
-        return dayDetails;
-      }));
-  
-      res.json({ dieta: weeklyDietDetails });
-    } catch (error) {
-      console.error("Error al recuperar la dieta más reciente:", error);
-      res.status(500).json({ message: "Error al recuperar la dieta", error });
+router.get('/daily-diet-details', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const latestDiet = await Dieta.findOne({ userId }).sort({ createdAt: -1 });
+
+    if (!latestDiet) {
+      return res.status(404).json({ message: "No se encontró dieta para este usuario" });
     }
-  });
+
+    const days = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+    const mealTypes = ['desayuno', 'almuerzo', 'cena'];
+
+    let weeklyDietDetails = days.map(day => {
+      let dayDetails = { dia: day, comidas: [] };
+      mealTypes.forEach(mealType => {
+        const meal = latestDiet.data.dieta.days.find(d => d.day === day)?.meals.find(m => m.meal === mealType);
+        if (meal) {
+          dayDetails.comidas.push({
+            tipoComida: mealType,
+            items: meal.items
+          });
+        } else {
+          dayDetails.comidas.push({
+            tipoComida: mealType,
+            items: ["No meal"]
+          });
+        }
+      });
+      return dayDetails;
+    });
+
+    res.json({ dieta: weeklyDietDetails });
+  } catch (error) {
+    console.error("Error al recuperar la dieta más reciente:", error);
+    res.status(500).json({ message: "Error al recuperar la dieta", error });
+  }
+});
+
   
 
 
