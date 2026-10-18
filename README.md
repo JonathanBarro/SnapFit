@@ -14,16 +14,6 @@ Built as a university project (2024) with **React, Node.js/Express, MongoDB and 
 - **Accounts.** Sign up, log in, change password. Protected pages for logged-in users only.
 - **Content pages.** Exercise library, supplements guide and nutrition basics.
 
-## Screenshots
-
-Public pages of the web app (the logged-in area needs a database to run).
-
-| | |
-| --- | --- |
-| ![Nutrition](docs/screenshots/nutrition.jpg) | ![Exercise](docs/screenshots/exercise.jpg) |
-| ![Supplements](docs/screenshots/supplements.jpg) | ![About](docs/screenshots/about.jpg) |
-| ![Login](docs/screenshots/login.jpg) | |
-
 ## Tech stack
 
 | Layer | Tools |
